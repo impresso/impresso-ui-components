@@ -194,6 +194,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { required, minLength, sameAs, helpers } from '@vuelidate/validators'
 import Icon from './Icon.vue'
 import Alert from './Alert.vue'
+import BFormInput from './legacy/BFormInput.vue'
 // Define more specific types for form data and emitted events
 interface PasswordFormData {
   currentPassword: string
