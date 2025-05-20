@@ -139,7 +139,7 @@
         />
 
         <button
-          type="submit"
+          type="button"
           class="toggle-password"
           @click="showRepeatPassword = !showRepeatPassword"
           aria-label="Toggle repeat password visibility"
