@@ -169,21 +169,33 @@
           </p>
         </Alert>
       </slot>
-      <button
-        class="btn btn-outline-secondary btn-md px-4 border border-dark btn-block"
-        type="submit"
-        :disabled="
+      <slot
+        name="submit-button"
+        v-bind:submit="() => submitForm()"
+        v-bind:isLoading="isLoading"
+        v-bind:disabled="
           isLoading ||
           v$.currentPassword.$error ||
           v$.newPassword.$error ||
           v$.repeatNewPassword.$error
         "
-        aria-label="Change password"
       >
-        <Icon name="key" :strokeWidth="1.5" />
-        <span class="ml-2" v-if="isLoading">Updating...</span>
-        <span class="ml-2" v-else>Change Password</span>
-      </button>
+        <button
+          class="btn btn-outline-secondary btn-md px-4 border border-dark btn-block"
+          type="submit"
+          :disabled="
+            isLoading ||
+            v$.currentPassword.$error ||
+            v$.newPassword.$error ||
+            v$.repeatNewPassword.$error
+          "
+          aria-label="Change password"
+        >
+          <Icon name="key" :strokeWidth="1.5" />
+          <span class="ml-2" v-if="isLoading">Updating...</span>
+          <span class="ml-2" v-else>Change Password</span>
+        </button>
+      </slot>
     </div>
   </form>
 </template>
