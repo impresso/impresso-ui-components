@@ -171,7 +171,7 @@
       </slot>
       <slot
         name="submit-button"
-        v-bind:submit="() => submitForm()"
+        v-bind:submit="submitForm"
         v-bind:isLoading="isLoading"
         v-bind:disabled="
           isLoading ||
