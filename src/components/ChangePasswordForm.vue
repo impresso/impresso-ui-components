@@ -121,7 +121,7 @@
     </div>
 
     <!-- Repeat New Password Field -->
-    <div class="form-group">
+    <div class="form-group mb-5">
       <label for="repeatNewPassword">Repeat New Password:</label>
       <div class="password-field">
         <b-form-input
@@ -161,6 +161,7 @@
         </p>
       </div>
     </div>
+
     <div class="position-sticky bottom-0 bg-white border-top py-3">
       <slot name="form-errors">
         <Alert type="warning" class="mb-3" role="alert" v-if="v$.$error">
