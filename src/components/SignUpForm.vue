@@ -120,19 +120,19 @@
       <div class="col">
         <BFormGroup
           label="Password *"
-          label-for="firstname"
-          :description="(v$.password.$errors[0]?.$message as string)"
+          label-for="password"
+          :description="(v$.password?.$errors[0]?.$message as string)"
         >
           <bFormInput
             id="password"
             name="password"
             required
-            type="text"
+            type="password"
             autocomplete="password"
             v-model.trim="formData.password"
             :class="{
-              'border-danger': v$.password.$error,
-              'border-success': !v$.password.$error && v$.password.$dirty,
+              'border-danger': v$.password?.$error,
+              'border-success': !v$.password?.$error && v$.password?.$dirty,
             }"
             class="rounded-sm shadow-sm"
             placeholder="Password"
@@ -148,7 +148,7 @@
           <bFormInput
             id="repeatPassword"
             name="repeatPassword"
-            type="text"
+            type="password"
             :required="doesPlanRequireAffiliation"
             autocomplete="new-password"
             v-model.trim="formData.repeatPassword"

@@ -9,7 +9,7 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A form for sign up the user.',
+        component: 'A form to sign up a user.',
       },
     },
   },

@@ -10,7 +10,8 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A form for changing the password of a user.',
+        component:
+          'A generic grouping component for form inputs, providing structure and accessibility features.',
       },
     },
   },
