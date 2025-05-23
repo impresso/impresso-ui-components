@@ -25,7 +25,8 @@
     "build": "vue-tsc -b && vite build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "prepare": "husky install"
+    "test": "vitest run",
+    "prepare": "husky"
   },
   "dependencies": {
     "@vuelidate/core": "^2.0.3",
