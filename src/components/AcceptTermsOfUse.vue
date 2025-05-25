@@ -1,5 +1,5 @@
 <template>
-  <section class="AcceptTermsOfUse d-flex justify-content-center">
+  <section class="AcceptTermsOfUse">
     <div class="form-check d-inline-block w-auto">
       <input
         id="terms-of-use"
@@ -9,7 +9,10 @@
         :disabled="disabled"
         @change="handleChange"
       />
-      <label for="terms-of-use" class="form-check-label font-weight-bold">
+      <label
+        for="terms-of-use"
+        class="form-check-label font-weight-bold d-flex align-items-center"
+      >
         <slot>I HAVE READ and I AGREE to the Impresso Terms of Use.</slot>
       </label>
     </div>
