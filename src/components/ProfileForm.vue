@@ -116,7 +116,7 @@
       </div>
     </div>
     <!-- password -->
-    <div class="row mb-5" v-if="mode === 'create'">
+    <div class="row mb-3" v-if="mode === 'create'">
       <div class="col">
         <BFormGroup
           label="Password *"
@@ -163,6 +163,7 @@
         </BFormGroup>
       </div>
     </div>
+    <slot></slot>
     <AcceptTermsOfUse
       class="mb-3"
       v-if="mode === 'create'"

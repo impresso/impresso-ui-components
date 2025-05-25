@@ -21,7 +21,9 @@ const meta = {
     },
     template: `
       <div style="width: 500px; height: 600px;">
-        <ProfileForm v-bind="args" />
+        <ProfileForm v-bind="args">
+          <div class="text-center mb-3">Additional content can be placed here.</div>
+        </ProfileForm>
       </div>
     `,
   }),
@@ -35,6 +37,19 @@ export const Default: Story = {
 
 export const WithInitialValues: Story = {
   args: {
+    initialValues: {
+      email: 'johndoe@uni.lu',
+      firstname: 'John',
+      lastname: 'Doe',
+      affiliation: 'University of Luxembourg',
+      institutionalUrl: 'https://www.uni.lu',
+    },
+  } as ProfileFormProps,
+}
+
+export const EditMode: Story = {
+  args: {
+    mode: 'edit',
     initialValues: {
       email: 'johndoe@uni.lu',
       firstname: 'John',
