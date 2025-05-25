@@ -1,5 +1,6 @@
 export { default as Alert } from './components/Alert.vue'
 export { default as Icon } from './components/Icon.vue'
 export { default as ChangePasswordForm } from './components/ChangePasswordForm.vue'
-export { default as SignUpForm } from './components/SignUpForm.vue'
+export { default as ProfileForm } from './components/ProfileForm.vue'
 export { default as ChangePlanForm } from './components/ChangePlanForm.vue'
+export { default as AcceptTermsOfUse } from './components/AcceptTermsOfUse.vue'

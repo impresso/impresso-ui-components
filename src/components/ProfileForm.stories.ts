@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
-import SignUpForm from './SignUpForm.vue'
-import type { SignUpFormProps } from './SignUpForm.vue'
+import ProfileForm from './ProfileForm.vue'
+import type { ProfileFormProps } from './ProfileForm.vue'
 
 const meta = {
-  title: 'forms/SignUpForm',
-  component: SignUpForm,
+  title: 'forms/ProfileForm',
+  component: ProfileForm,
   parameters: {
     layout: 'centered',
     docs: {
@@ -15,22 +15,22 @@ const meta = {
   },
   tags: ['autodocs'],
   render: (args: any) => ({
-    components: { SignUpForm },
+    components: { ProfileForm },
     setup() {
       return { args }
     },
     template: `
       <div style="width: 500px; height: 600px;">
-        <SignUpForm v-bind="args" />
+        <ProfileForm v-bind="args" />
       </div>
     `,
   }),
-} satisfies Meta<typeof SignUpForm>
+} satisfies Meta<typeof ProfileForm>
 
 export default meta
 type Story = StoryObj<typeof meta>
 export const Default: Story = {
-  args: {} as SignUpFormProps,
+  args: {} as ProfileFormProps,
 }
 
 export const WithInitialValues: Story = {
@@ -42,5 +42,5 @@ export const WithInitialValues: Story = {
       affiliation: 'University of Luxembourg',
       institutionalUrl: 'https://www.uni.lu',
     },
-  } as SignUpFormProps,
+  } as ProfileFormProps,
 }

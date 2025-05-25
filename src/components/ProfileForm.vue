@@ -116,7 +116,7 @@
       </div>
     </div>
     <!-- password -->
-    <div class="row" v-if="!hasInitialValues">
+    <div class="row mb-5" v-if="mode === 'create'">
       <div class="col">
         <BFormGroup
           label="Password *"
@@ -163,6 +163,16 @@
         </BFormGroup>
       </div>
     </div>
+    <AcceptTermsOfUse
+      class="mb-3"
+      v-if="mode === 'create'"
+      :disabled="isLoading"
+      @change="(event: Event) => {
+        emit('changeAcceptTerms', (event.target as HTMLInputElement).checked)
+      }"
+    >
+      <slot name="accept-terms-of-use-label"> </slot>
+    </AcceptTermsOfUse>
     <!-- error ma,nagemend and form submission -->
     <div class="position-sticky bottom-0 bg-white border-top py-3">
       <slot name="form-errors">
@@ -182,7 +192,7 @@
         >
           <Icon name="key" :strokeWidth="1.5" />
           <span class="ml-2" v-if="isLoading">Saving...</span>
-          <span class="ml-2" v-else-if="hasInitialValues">Save changes</span>
+          <span class="ml-2" v-else-if="mode === 'edit'">Save changes</span>
           <span class="ml-2" v-else>Create Account</span>
         </button>
       </slot>
@@ -193,6 +203,7 @@
 import useVuelidate from '@vuelidate/core'
 import Icon from './Icon.vue'
 import Alert from './Alert.vue'
+import AcceptTermsOfUse from './AcceptTermsOfUse.vue'
 import {
   email,
   helpers,
@@ -202,7 +213,7 @@ import {
 } from '@vuelidate/validators'
 import BFormGroup from './legacy/BFormGroup.vue'
 import BFormInput from './legacy/BFormInput.vue'
-import { reactive, computed } from 'vue'
+import { reactive, computed, watch } from 'vue'
 
 export interface SignUpFormPayload {
   firstname: string
@@ -214,13 +225,14 @@ export interface SignUpFormPayload {
   affiliation: string
 }
 
-export interface SignUpFormProps {
+export interface ProfileFormProps {
   initialValues?: SignUpFormPayload
   doesPlanRequireAffiliation?: boolean
   isLoading?: boolean
+  mode?: 'create' | 'edit'
 }
 
-const props = withDefaults(defineProps<SignUpFormProps>(), {
+const props = withDefaults(defineProps<ProfileFormProps>(), {
   initialValues: () => ({
     firstname: '',
     lastname: '',
@@ -230,17 +242,7 @@ const props = withDefaults(defineProps<SignUpFormProps>(), {
     password: '',
     repeatPassword: '',
   }),
-})
-const hasInitialValues = computed(() => {
-  return (
-    Object.keys(props.initialValues).reduce(
-      (acc, key) =>
-        (acc += (
-          props.initialValues[key as keyof SignUpFormPayload] ?? ('' as string)
-        ).length),
-      0
-    ) > 0
-  )
+  mode: 'create',
 })
 // const showNewPassword = ref(false)
 // const showRepeatPassword = ref(false)
@@ -250,27 +252,28 @@ const PasswordRegex =
   /^(?=.*?[A-Z])(?=.*[a-z])(?=.*[\d])(?=.*[\W_])(?!.*\s).{8,}$/
 // Vuelidate rules
 const formRules = computed(() => {
-  const passwordRules = hasInitialValues.value
-    ? {}
-    : {
-        password: {
-          minLength: minLength(8),
-          urlRegex: helpers.withMessage(
-            'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character',
-            (value: string) => PasswordRegex.exec(value) != null
-          ),
-          required,
-          $autoDirty: true,
-        }, // min: 8, regex: passwordRegex
-        repeatPassword: {
-          required,
-          sameAsPassword: helpers.withMessage(
-            'Passwords do not match.',
-            sameAs(computed(() => formData.password))
-          ),
-          $autoDirty: true,
-        }, // required|confirmed:repeatPassword
-      }
+  const passwordRules =
+    props.mode === 'edit'
+      ? {}
+      : {
+          password: {
+            minLength: minLength(8),
+            urlRegex: helpers.withMessage(
+              'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character',
+              (value: string) => PasswordRegex.exec(value) != null
+            ),
+            required,
+            $autoDirty: true,
+          }, // min: 8, regex: passwordRegex
+          repeatPassword: {
+            required,
+            sameAsPassword: helpers.withMessage(
+              'Passwords do not match.',
+              sameAs(computed(() => formData.password))
+            ),
+            $autoDirty: true,
+          }, // required|confirmed:repeatPassword
+        }
   return {
     firstname: { required, minLength: minLength(2), $autoDirty: true }, // required|min:2
     lastname: { required, minLength: minLength(2), $autoDirty: true }, // required|min:2
@@ -306,6 +309,7 @@ const v$ = useVuelidate(formRules, formData)
 // Define emits with type safety
 const emit = defineEmits<{
   (e: 'submit', payload: SignUpFormPayload): void
+  (e: 'changeAcceptTerms', payload: string): void
 }>()
 
 // Form submission handler
@@ -323,4 +327,15 @@ const submitForm = async () => {
     console.error('[SignUpForm] Form validation errors:', v$.$errors)
   }
 }
+watch(
+  () => props.initialValues,
+  (newInitialValues) => {
+    // Reset form data to new initial values
+    Object.assign(formData, newInitialValues)
+
+    // Reset validation state
+    v$.value.$reset()
+  },
+  { deep: true, immediate: true }
+)
 </script>

@@ -10,7 +10,7 @@
         @change="handleChange"
       />
       <label for="terms-of-use" class="form-check-label font-weight-bold">
-        I HAVE READ and I AGREE to the Impresso Terms of Use.
+        <slot>I HAVE READ and I AGREE to the Impresso Terms of Use.</slot>
       </label>
     </div>
   </section>
