@@ -4,3 +4,4 @@ export { default as ChangePasswordForm } from './components/ChangePasswordForm.v
 export { default as ProfileForm } from './components/ProfileForm.vue'
 export { default as ChangePlanForm } from './components/ChangePlanForm.vue'
 export { default as AcceptTermsOfUse } from './components/AcceptTermsOfUse.vue'
+export { default as OverlayTrigger } from './components/OverlayTrigger.vue'
