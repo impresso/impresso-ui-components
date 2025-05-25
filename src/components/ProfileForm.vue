@@ -215,7 +215,7 @@ import BFormGroup from './legacy/BFormGroup.vue'
 import BFormInput from './legacy/BFormInput.vue'
 import { reactive, computed, watch } from 'vue'
 
-export interface SignUpFormPayload {
+export interface ProfileFormPayload {
   firstname: string
   lastname: string
   email: string
@@ -226,7 +226,7 @@ export interface SignUpFormPayload {
 }
 
 export interface ProfileFormProps {
-  initialValues?: SignUpFormPayload
+  initialValues?: ProfileFormPayload
   doesPlanRequireAffiliation?: boolean
   isLoading?: boolean
   mode?: 'create' | 'edit'
@@ -247,7 +247,7 @@ const props = withDefaults(defineProps<ProfileFormProps>(), {
 // const showNewPassword = ref(false)
 // const showRepeatPassword = ref(false)
 // Form data
-const formData = reactive<SignUpFormPayload>(props.initialValues)
+const formData = reactive<ProfileFormPayload>(props.initialValues)
 const PasswordRegex =
   /^(?=.*?[A-Z])(?=.*[a-z])(?=.*[\d])(?=.*[\W_])(?!.*\s).{8,}$/
 // Vuelidate rules
@@ -308,7 +308,7 @@ const v$ = useVuelidate(formRules, formData)
 
 // Define emits with type safety
 const emit = defineEmits<{
-  (e: 'submit', payload: SignUpFormPayload): void
+  (e: 'submit', payload: ProfileFormPayload): void
   (e: 'changeAcceptTerms', payload: string): void
 }>()
 
