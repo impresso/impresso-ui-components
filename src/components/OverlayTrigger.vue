@@ -37,7 +37,7 @@ import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue'
 type Placement = 'top' | 'bottom' | 'left' | 'right' | 'auto'
 type Trigger = 'hover' | 'click' | 'focus' | 'manual'
 
-interface OverlayTriggerProps {
+export interface OverlayTriggerProps {
   placement?: Placement
   trigger?: Trigger | Trigger[]
   tooltip?: string
