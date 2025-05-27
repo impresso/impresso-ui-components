@@ -158,11 +158,13 @@
                 !v$.repeatPassword?.$error && v$.repeatPassword?.$dirty,
             }"
             class="rounded-sm shadow-sm"
-            placeholder="Last Name *"
+            placeholder="Repeat Password"
           ></bFormInput>
         </BFormGroup>
       </div>
     </div>
+    <ColorPatternPicker v-model:colors="colors"></ColorPatternPicker>
+    {{ colors }}
     <slot></slot>
     <AcceptTermsOfUse
       class="mb-3"
@@ -178,9 +180,16 @@
     <div class="position-sticky bottom-0 bg-white border-top py-3">
       <slot name="form-errors">
         <Alert type="warning" class="mb-3" role="alert" v-if="v$.$error">
-          <p class="m-0">
-            Please correct the errors in the form before submitting.
-          </p>
+          <div>
+            Please correct the errors in the form before submitting:
+            <ul class="m-0">
+              <li v-for="error in v$.$errors" :key="error.$uid">
+                <b>{{ error.$property }}</b
+                >:
+                {{ error.$message }}
+              </li>
+            </ul>
+          </div>
         </Alert>
       </slot>
       <slot name="submit-button" v-bind:submit="submitForm">
@@ -196,6 +205,7 @@
           <span class="ml-2" v-else-if="mode === 'edit'">Save changes</span>
           <span class="ml-2" v-else>Create Account</span>
         </button>
+        {{ isLoading }}
       </slot>
     </div>
   </form>
@@ -214,16 +224,18 @@ import {
 } from '@vuelidate/validators'
 import BFormGroup from './legacy/BFormGroup.vue'
 import BFormInput from './legacy/BFormInput.vue'
-import { reactive, computed, watch } from 'vue'
+import { reactive, computed, watch, ref } from 'vue'
+import ColorPatternPicker from './ColorPatternPicker.vue'
 
 export interface ProfileFormPayload {
   firstname: string
   lastname: string
   email: string
-  password: string
-  repeatPassword: string
+  password?: string
+  repeatPassword?: string
   institutionalUrl: string
   affiliation: string
+  pattern?: string
 }
 
 export interface ProfileFormProps {
@@ -242,9 +254,11 @@ const props = withDefaults(defineProps<ProfileFormProps>(), {
     email: '',
     password: '',
     repeatPassword: '',
+    pattern: '',
   }),
   mode: 'create',
 })
+const colors = ref<string[]>([])
 // const showNewPassword = ref(false)
 // const showRepeatPassword = ref(false)
 // Form data
@@ -279,7 +293,6 @@ const formRules = computed(() => {
     firstname: { required, minLength: minLength(2), $autoDirty: true }, // required|min:2
     lastname: { required, minLength: minLength(2), $autoDirty: true }, // required|min:2
     email: { required, minLength: minLength(4), email, $autoDirty: true }, // required|email
-
     institutionalUrl: {
       $autoDirty: true,
       required: false,
@@ -309,23 +322,28 @@ const v$ = useVuelidate(formRules, formData)
 
 // Define emits with type safety
 const emit = defineEmits<{
-  (e: 'submit', payload: ProfileFormPayload): void
-  (e: 'changeAcceptTerms', payload: string): void
+  submit: [payload: ProfileFormPayload]
+  changeAcceptTerms: [value: boolean]
 }>()
 
 // Form submission handler
 const submitForm = async () => {
   // Trigger validation
   const isFormValid = await v$.value.$validate()
-  console.info('[SignUpForm] Form validation result:', isFormValid)
+  console.info(
+    '[SignUpForm] Form validation result:',
+    isFormValid,
+    colors.value.join(',')
+  )
   if (isFormValid) {
     // Form is valid, emit event with password data
     emit('submit', {
       ...formData,
+      pattern: colors.value.join(','),
     })
   } else {
     // log the errors
-    console.error('[SignUpForm] Form validation errors:', v$.$errors)
+    console.error('[SignUpForm] Form validation errors:', v$.value.$errors)
   }
 }
 watch(

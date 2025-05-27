@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
+import { action } from '@storybook/addon-actions'
 import ProfileForm from './ProfileForm.vue'
 import type { ProfileFormProps } from './ProfileForm.vue'
 
@@ -32,18 +33,8 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 export const Default: Story = {
-  args: {} as ProfileFormProps,
-}
-
-export const WithInitialValues: Story = {
   args: {
-    initialValues: {
-      email: 'johndoe@uni.lu',
-      firstname: 'John',
-      lastname: 'Doe',
-      affiliation: 'University of Luxembourg',
-      institutionalUrl: 'https://www.uni.lu',
-    },
+    onSubmit: action('@submit'),
   } as ProfileFormProps,
 }
 
@@ -57,5 +48,21 @@ export const EditMode: Story = {
       affiliation: 'University of Luxembourg',
       institutionalUrl: 'https://www.uni.lu',
     },
+    onSubmit: action('@submit'),
+  } as ProfileFormProps,
+}
+
+export const EditModeButDisabled: Story = {
+  args: {
+    mode: 'edit',
+    initialValues: {
+      email: 'johndoe@uni.lu',
+      firstname: 'John',
+      lastname: 'Doe',
+      affiliation: 'University of Luxembourg',
+      institutionalUrl: 'https://www.uni.lu',
+    },
+    onSubmit: action('@submit'),
+    isLoading: true,
   } as ProfileFormProps,
 }
