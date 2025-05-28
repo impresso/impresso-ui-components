@@ -1,46 +1,53 @@
 <template>
-  <form class="ChangePlanForm">
-    <div
-      v-for="plan in props.availablePlans"
-      :key="plan.name"
-      class="d-flex align-items-center gap-2 m-2 p-1"
-    >
-      <label
-        :class="[
-          'border rounded-md shadow-sm d-block py-2 pr-3 pl-2 d-flex m-0',
-          { active: selectedPlan === plan.name },
-          { current: props.currentPlan === plan.name },
-          { pending: pendingPlan === plan.name },
-        ]"
-      >
-        <input
-          type="radio"
-          :name="'plan'"
-          :id="`ChangePlanForm.${plan.name}`"
-          :checked="pendingPlan === plan.name || selectedPlan === plan.name"
-          @change="selectedPlan = plan.name"
-          :disabled="!!pendingPlan || plan.name === rejectedPlan"
-        />
-        <div class="ml-2">
-          {{ plan.label }}
-          <div v-if="props.currentPlan === plan.name">
-            <span class="badge bg-primary text-white small-caps"
-              >Your plan</span
-            >
-          </div>
-          <div v-if="pendingPlan === plan.name">
-            <span class="badge bg-info text-dark small-caps"
-              >Pending change</span
-            >
-          </div>
-          <div v-if="rejectedPlan === plan.name">
-            <span class="badge bg-warning text-dark small-caps"
-              >rejected change</span
-            >
-          </div>
+  <form
+    class="ChangePlanForm"
+    :class="{ 'd-flex flex-wrap align-items-center': props.inline }"
+    @submit="handleOnSubmit"
+  >
+    <div v-for="plan in props.availablePlans" :key="plan.name">
+      <OverlayTrigger :disabled="!inline" :placement="'bottom'">
+        <template #tooltip>
+          <p class="m-0 small" v-html="plan.description" />
+        </template>
+        <div class="d-flex align-items-center gap-2 m-2 p-1">
+          <label
+            :class="[
+              'border rounded-md shadow-sm d-block py-2 pr-3 pl-2 d-flex m-0',
+              { active: selectedPlan === plan.name },
+              { current: props.currentPlan === plan.name },
+              { pending: pendingPlan === plan.name },
+            ]"
+          >
+            <input
+              type="radio"
+              :name="'plan'"
+              :id="`ChangePlanForm.${plan.name}`"
+              :checked="pendingPlan === plan.name || selectedPlan === plan.name"
+              @change="selectedPlan = plan.name"
+              :disabled="!!pendingPlan || plan.name === rejectedPlan"
+            />
+            <div class="ml-2">
+              {{ plan.label }}
+              <div v-if="props.currentPlan === plan.name">
+                <span class="badge bg-primary text-white small-caps"
+                  >Your plan</span
+                >
+              </div>
+              <div v-if="pendingPlan === plan.name">
+                <span class="badge bg-info text-dark small-caps"
+                  >Pending change</span
+                >
+              </div>
+              <div v-if="rejectedPlan === plan.name">
+                <span class="badge bg-warning text-dark small-caps"
+                  >rejected change</span
+                >
+              </div>
+            </div>
+          </label>
+          <p class="m-0 small" v-html="plan.description" v-if="!inline" />
         </div>
-      </label>
-      <p class="m-0 small" v-html="plan.description" />
+      </OverlayTrigger>
     </div>
     <slot
       name="submit-button"
@@ -62,6 +69,7 @@
 <script setup lang="ts">
 import Icon from './Icon.vue'
 import { ref, watch } from 'vue'
+import OverlayTrigger from './OverlayTrigger.vue'
 
 /**
  * Type definitions for the form payload
@@ -71,6 +79,7 @@ export type ChangePlanFormPayload = {
 }
 
 export interface ChangePlanFormProps {
+  inline?: boolean
   currentPlan?: string
   pendingPlan?: string
   rejectedPlan?: string
@@ -87,6 +96,8 @@ export type AvailablePlan = {
  * Props definition for ChangePlanForm component
  */
 const props = withDefaults(defineProps<ChangePlanFormProps>(), {
+  // Whether the form is displayed inline or not
+  inline: false,
   availablePlans: () => [],
 })
 

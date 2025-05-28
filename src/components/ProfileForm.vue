@@ -25,7 +25,7 @@
       address is
       <b>required</b>.
     </p>
-    <div class="row">
+    <div class="row" v-if="!hideAffiliationFields">
       <div class="col">
         <BFormGroup
           label="Affiliation"
@@ -164,7 +164,7 @@
       </div>
     </div>
     <ColorPatternPicker v-model:colors="colors"></ColorPatternPicker>
-    {{ colors }}
+
     <slot></slot>
     <AcceptTermsOfUse
       class="mb-3"
@@ -240,6 +240,7 @@ export interface ProfileFormPayload {
 
 export interface ProfileFormProps {
   initialValues?: ProfileFormPayload
+  hideAffiliationFields?: boolean
   doesPlanRequireAffiliation?: boolean
   isLoading?: boolean
   mode?: 'create' | 'edit'
@@ -267,6 +268,32 @@ const PasswordRegex =
   /^(?=.*?[A-Z])(?=.*[a-z])(?=.*[\d])(?=.*[\W_])(?!.*\s).{8,}$/
 // Vuelidate rules
 const formRules = computed(() => {
+  let affiliationRules: { affiliation?: any; institutionalUrl?: any } = {}
+  if (!props.hideAffiliationFields) {
+    affiliationRules.affiliation = props.doesPlanRequireAffiliation
+      ? {
+          $autoDirty: true,
+          required,
+          minLength: minLength(2),
+        }
+      : {}
+    affiliationRules.institutionalUrl = {
+      $autoDirty: true,
+      required: false,
+      urlRegex: helpers.withMessage(
+        'Please enter a valid URL',
+        (value: string) => {
+          if (!value || value.length === 0) {
+            return true
+          }
+          const urlPattern =
+            /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/
+          return urlPattern.test(value)
+        }
+      ),
+    }
+  }
+
   const passwordRules =
     props.mode === 'edit'
       ? {}
@@ -293,27 +320,9 @@ const formRules = computed(() => {
     firstname: { required, minLength: minLength(2), $autoDirty: true }, // required|min:2
     lastname: { required, minLength: minLength(2), $autoDirty: true }, // required|min:2
     email: { required, minLength: minLength(4), email, $autoDirty: true }, // required|email
-    institutionalUrl: {
-      $autoDirty: true,
-      required: false,
-      urlRegex: helpers.withMessage(
-        'Please enter a valid URL',
-        (value: string) => {
-          if (!value || value.length === 0) {
-            return true
-          }
-          const urlPattern =
-            /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/
-          return urlPattern.test(value)
-        }
-      ),
-    },
-    affiliation: {
-      $autoDirty: true,
-      required: false,
-      minLength: minLength(2),
-    },
+
     ...passwordRules,
+    ...affiliationRules,
   }
 })
 

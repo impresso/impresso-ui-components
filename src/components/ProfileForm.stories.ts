@@ -66,3 +66,9 @@ export const EditModeButDisabled: Story = {
     isLoading: true,
   } as ProfileFormProps,
 }
+
+export const WithoutAffiliationFields: Story = {
+  args: {
+    hideAffiliationFields: true,
+  } as ProfileFormProps,
+}

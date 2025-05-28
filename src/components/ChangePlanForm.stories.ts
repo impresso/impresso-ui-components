@@ -80,3 +80,12 @@ export const WithRejectedPlan: Story = {
     rejectedPlan: 'plan-researcher',
   } as ChangePlanFormProps,
 }
+
+export const AsInlineForm: Story = {
+  args: {
+    inline: true,
+    isLoading: false,
+    availablePlans: AvailablePlans,
+    currentPlan: 'plan-basic',
+  } as ChangePlanFormProps,
+}
