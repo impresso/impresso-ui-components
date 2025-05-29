@@ -20,18 +20,21 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, watch, watchEffect } from 'vue'
 
 export interface ColorPatternPickerProps {
   numColors?: number
   availableColors?: string[]
+  initialColors?: string[] // Optional prop to set initial colors
 }
 
 const colors = defineModel<string[]>('colors', {
   default: () => [],
 })
+
 const props = withDefaults(defineProps<ColorPatternPickerProps>(), {
   numColors: 7,
+  initialColors: () => [],
   availableColors: () => [
     '#96ceb4',
     '#ffeead',
@@ -65,31 +68,31 @@ const props = withDefaults(defineProps<ColorPatternPickerProps>(), {
   ],
 })
 
-const computedNumOfColors = computed(() => {
-  if (colors.value.length !== props.numColors || colors.value.length === 0) {
-    colors.value = generateRandomPattern(props.numColors)
-  }
-  return colors.value.length
-})
+// Initialize colors from props and keep them synced
 
 const backgroundGradient = computed(() => {
-  const n = +computedNumOfColors.value
+  const n = colors.value.length
+  if (n === 0) return 'transparent'
+
   const stops = []
   const merge = 2 // percent overlap
   const bandWidth = 100 / n
+
   for (let i = 0; i < n; i++) {
     const color = colors.value[i]
     const start = i === 0 ? 0 : i * bandWidth - merge
     const end = i === n - 1 ? 100 : (i + 1) * bandWidth + merge
+
     stops.push(
       `${color} ${Math.max(0, start)}%`,
       `${color} ${Math.min(100, end)}%`
     )
   }
+
   return `linear-gradient(90deg, ${stops.join(', ')})`
 })
 
-function generateRandomPattern(length: number) {
+function generateRandomPattern(length: number): string[] {
   return Array.from(
     { length },
     () =>
@@ -100,8 +103,31 @@ function generateRandomPattern(length: number) {
 }
 
 function onGenerateRandomPatternClick(e: MouseEvent) {
+  console.debug(
+    '[ColorPatternPicker] @onGenerateRandomPatternClick',
+    generateRandomPattern(props.numColors)
+  )
   e.preventDefault()
-
-  colors.value = generateRandomPattern(computedNumOfColors.value)
+  colors.value = generateRandomPattern(props.numColors)
 }
+
+watch(
+  () => props.initialColors,
+  (newColors: string[]) => {
+    if (newColors.length > 0) {
+      colors.value = newColors
+    } else {
+      colors.value = generateRandomPattern(props.numColors)
+    }
+  },
+  { immediate: true }
+)
+watch(
+  () => props.numColors,
+  () => {
+    if (colors.value.length !== props.numColors) {
+      colors.value = generateRandomPattern(props.numColors)
+    }
+  }
+)
 </script>

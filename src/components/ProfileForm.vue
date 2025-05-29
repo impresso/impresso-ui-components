@@ -116,7 +116,7 @@
       </div>
     </div>
     <!-- password -->
-    <div class="row mb-3" v-if="mode === 'create'">
+    <div class="row" v-if="mode === 'create'">
       <div class="col">
         <BFormGroup
           label="Password *"
@@ -163,7 +163,12 @@
         </BFormGroup>
       </div>
     </div>
-    <ColorPatternPicker v-model:colors="colors"></ColorPatternPicker>
+    <ColorPatternPicker
+      class="my-3"
+      v-model:colors="colors"
+      :num-colors="initialColors.length"
+      :initial-colors="initialColors"
+    ></ColorPatternPicker>
 
     <slot></slot>
     <AcceptTermsOfUse
@@ -205,7 +210,6 @@
           <span class="ml-2" v-else-if="mode === 'edit'">Save changes</span>
           <span class="ml-2" v-else>Create Account</span>
         </button>
-        {{ isLoading }}
       </slot>
     </div>
   </form>
@@ -259,6 +263,9 @@ const props = withDefaults(defineProps<ProfileFormProps>(), {
   }),
   mode: 'create',
 })
+const initialColors = props.initialValues.pattern?.length
+  ? props.initialValues.pattern.split(',')
+  : []
 const colors = ref<string[]>([])
 // const showNewPassword = ref(false)
 // const showRepeatPassword = ref(false)

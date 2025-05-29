@@ -72,3 +72,18 @@ export const WithoutAffiliationFields: Story = {
     hideAffiliationFields: true,
   } as ProfileFormProps,
 }
+
+export const WithPattern: Story = {
+  args: {
+    mode: 'edit',
+    initialValues: {
+      email: 'johndoe@uni.lu',
+      firstname: 'John',
+      lastname: 'Doe',
+      affiliation: 'University of Luxembourg',
+      institutionalUrl: 'https://www.uni.lu',
+      pattern: '#ff0000,#ffcc00',
+    },
+    onSubmit: action('@submit'),
+  } as ProfileFormProps,
+}
