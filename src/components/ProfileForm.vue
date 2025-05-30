@@ -166,7 +166,7 @@
     <ColorPatternPicker
       class="my-3"
       v-model:colors="colors"
-      :num-colors="initialColors.length"
+      :num-colors="initialColors.length || 7"
       :initial-colors="initialColors"
     ></ColorPatternPicker>
 
