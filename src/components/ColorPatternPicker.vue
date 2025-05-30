@@ -11,7 +11,7 @@
     ></div>
     <button
       type="button"
-      class="ml-3 ms-3 btn btn-sm"
+      class="ml-3 ms-3 btn btn-sm btn-secondary"
       @click="onGenerateRandomPatternClick"
     >
       change colors
@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, watchEffect } from 'vue'
+import { computed, watch } from 'vue'
 
 export interface ColorPatternPickerProps {
   numColors?: number
