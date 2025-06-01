@@ -294,19 +294,12 @@ const submitForm = async () => {
   const isFormValid = await v$.value.$validate()
   console.info('[ChangePasswordForm] Form validation result:', isFormValid)
   if (isFormValid) {
-    // Form is valid, emit event with password data
+    // Form is valid, emit event with password data. Verify that isLoading prop is being changed by the parent component
     emit('submit', {
       currentPassword: formData.currentPassword,
       newPassword: formData.newPassword,
       repeatNewPassword: formData.repeatNewPassword,
     })
-
-    // Reset form after successful submission
-    formData.currentPassword = ''
-    formData.newPassword = ''
-    formData.repeatNewPassword = ''
-    v$.value.$reset()
-
     // Reset visibility toggles
     showCurrentPassword.value = false
     showNewPassword.value = false
