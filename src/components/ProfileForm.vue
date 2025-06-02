@@ -4,7 +4,7 @@
       id="input-group-1"
       label="Email (please use institution email if available) *"
       label-for="email"
-      :description="(v$.email.$errors[0]?.$message as string)"
+      :description="(v$.email!.$errors[0]?.$message as string)"
     >
       <BFormInput
         id="email"
@@ -13,8 +13,8 @@
         required
         autocomplete="email"
         :class="{
-          'border-danger': v$.email.$error,
-          'border-success': !v$.email.$error && v$.email.$dirty,
+          'border-danger': v$.email!.$error,
+          'border-success': !v$.email!.$error && v$.email!.$dirty,
         }"
         class="rounded-sm shadow-sm"
         v-model.trim="formData.email"
@@ -215,7 +215,7 @@
   </form>
 </template>
 <script setup lang="ts">
-import useVuelidate from '@vuelidate/core'
+import useVuelidate, { type Validation } from '@vuelidate/core'
 import Icon from './Icon.vue'
 import Alert from './Alert.vue'
 import AcceptTermsOfUse from './AcceptTermsOfUse.vue'
@@ -274,64 +274,74 @@ const formData = reactive<ProfileFormPayload>(props.initialValues)
 const PasswordRegex =
   /^(?=.*?[A-Z])(?=.*[a-z])(?=.*[\d])(?=.*[\W_])(?!.*\s).{8,}$/
 // Vuelidate rules
-const formRules = computed(() => {
-  let affiliationRules: { affiliation?: any; institutionalUrl?: any } = {}
-  if (!props.hideAffiliationFields) {
-    affiliationRules.affiliation = props.doesPlanRequireAffiliation
-      ? {
-          $autoDirty: true,
-          required,
-          minLength: minLength(2),
-        }
-      : {}
-    affiliationRules.institutionalUrl = {
-      $autoDirty: true,
-      required: false,
-      urlRegex: helpers.withMessage(
-        'Please enter a valid URL',
-        (value: string) => {
-          if (!value || value.length === 0) {
-            return true
+const formRules = computed(
+  (): {
+    firstname: any
+    lastname: any
+    email: any
+    password?: any
+    repeatPassword?: any
+    affiliation?: any
+    institutionalUrl?: any
+  } => {
+    let affiliationRules: { affiliation?: any; institutionalUrl?: any } = {}
+    if (!props.hideAffiliationFields) {
+      affiliationRules.affiliation = props.doesPlanRequireAffiliation
+        ? {
+            $autoDirty: true,
+            required,
+            minLength: minLength(2),
           }
-          const urlPattern =
-            /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/
-          return urlPattern.test(value)
-        }
-      ),
+        : {}
+      affiliationRules.institutionalUrl = {
+        $autoDirty: true,
+        required: false,
+        urlRegex: helpers.withMessage(
+          'Please enter a valid URL',
+          (value: string) => {
+            if (!value || value.length === 0) {
+              return true
+            }
+            const urlPattern =
+              /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/
+            return urlPattern.test(value)
+          }
+        ),
+      }
+    }
+
+    const passwordRules =
+      props.mode === 'edit'
+        ? {}
+        : {
+            password: {
+              minLength: minLength(8),
+              urlRegex: helpers.withMessage(
+                'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character',
+                (value: string) => PasswordRegex.exec(value) != null
+              ),
+              required,
+              $autoDirty: true,
+            }, // min: 8, regex: passwordRegex
+            repeatPassword: {
+              required,
+              sameAsPassword: helpers.withMessage(
+                'Passwords do not match.',
+                sameAs(computed(() => formData.password))
+              ),
+              $autoDirty: true,
+            }, // required|confirmed:repeatPassword
+          }
+    return {
+      firstname: { required, minLength: minLength(2), $autoDirty: true }, // required|min:2
+      lastname: { required, minLength: minLength(2), $autoDirty: true }, // required|min:2
+      email: { required, minLength: minLength(4), email, $autoDirty: true }, // required|email
+
+      ...passwordRules,
+      ...affiliationRules,
     }
   }
-
-  const passwordRules =
-    props.mode === 'edit'
-      ? {}
-      : {
-          password: {
-            minLength: minLength(8),
-            urlRegex: helpers.withMessage(
-              'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character',
-              (value: string) => PasswordRegex.exec(value) != null
-            ),
-            required,
-            $autoDirty: true,
-          }, // min: 8, regex: passwordRegex
-          repeatPassword: {
-            required,
-            sameAsPassword: helpers.withMessage(
-              'Passwords do not match.',
-              sameAs(computed(() => formData.password))
-            ),
-            $autoDirty: true,
-          }, // required|confirmed:repeatPassword
-        }
-  return {
-    firstname: { required, minLength: minLength(2), $autoDirty: true }, // required|min:2
-    lastname: { required, minLength: minLength(2), $autoDirty: true }, // required|min:2
-    email: { required, minLength: minLength(4), email, $autoDirty: true }, // required|email
-
-    ...passwordRules,
-    ...affiliationRules,
-  }
-})
+)
 
 // Define emits with type safety
 const emit = defineEmits<{
