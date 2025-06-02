@@ -280,9 +280,6 @@ const rules = {
   },
 }
 
-// Initialize validation
-const v$ = useVuelidate(rules, formData)
-
 // Define emits with type safety
 const emit = defineEmits<{
   (e: 'submit', payload: PasswordChangePayload): void
@@ -306,6 +303,9 @@ const submitForm = async () => {
     showRepeatPassword.value = false
   }
 }
+
+// Initialize validation
+const v$ = useVuelidate(rules, formData)
 </script>
 
 <style scoped>

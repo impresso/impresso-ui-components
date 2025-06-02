@@ -14,7 +14,7 @@
 import { computed, useAttrs, onMounted, nextTick, ref } from 'vue'
 
 export interface BFormInputProps {
-  modelValue: string | number
+  modelValue?: string | number
   autofocus?: boolean
   type?: string
   size?: string

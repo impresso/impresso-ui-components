@@ -333,9 +333,6 @@ const formRules = computed(() => {
   }
 })
 
-// Initialize validation
-const v$ = useVuelidate(formRules, formData)
-
 // Define emits with type safety
 const emit = defineEmits<{
   submit: [payload: ProfileFormPayload]
@@ -362,6 +359,9 @@ const submitForm = async () => {
     console.error('[SignUpForm] Form validation errors:', v$.value.$errors)
   }
 }
+
+// Initialize validation
+const v$ = useVuelidate(formRules, formData)
 watch(
   () => props.initialValues,
   (newInitialValues) => {
