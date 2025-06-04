@@ -1,14 +1,26 @@
 <template>
   <div class="audio-player">
     <div class="audio-controls">
-      <button @click="togglePlay" :disabled="!src" class="play-button" :aria-label="isPlaying ? 'Pause' : 'Play'">
+      <button
+        @click="togglePlay"
+        :disabled="!src"
+        class="play-button"
+        :aria-label="isPlaying ? 'Pause' : 'Play'"
+      >
         <span v-if="isPlaying">⏸️</span>
         <span v-else>▶️</span>
       </button>
 
       <div class="progress-container">
-        <input type="range" min="0" :max="duration" :value="currentTime" @input="seek" class="progress-bar"
-          :disabled="!src" />
+        <input
+          type="range"
+          min="0"
+          :max="duration"
+          :value="currentTime"
+          @input="seek"
+          class="progress-bar"
+          :disabled="!src"
+        />
         <div class="time-display">
           <span class="current-time">{{ formatTime(currentTime) }}</span>
           <span class="duration">{{ formatTime(duration) }}</span>
@@ -21,12 +33,27 @@
           <span v-else-if="volume < 0.5">🔉</span>
           <span v-else>🔊</span>
         </button>
-        <input type="range" min="0" max="1" step="0.1" :value="volume" @input="setVolume" class="volume-slider" />
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.1"
+          :value="volume"
+          @input="setVolume"
+          class="volume-slider"
+        />
       </div>
     </div>
 
-    <audio ref="audioElement" :src="src" @loadedmetadata="onLoadedMetadata" @timeupdate="onTimeUpdate" @ended="onEnded"
-      @error="onError" preload="metadata" />
+    <audio
+      ref="audioElement"
+      :src="src"
+      @loadedmetadata="onLoadedMetadata"
+      @timeupdate="onTimeUpdate"
+      @ended="onEnded"
+      @error="onError"
+      preload="metadata"
+    />
   </div>
 </template>
 
@@ -44,7 +71,7 @@ const props = withDefaults(defineProps<Props>(), {
   src: '',
   autoplay: false,
   loop: false,
-  authToken: ''
+  authToken: '',
 })
 
 const emit = defineEmits<{
@@ -53,6 +80,7 @@ const emit = defineEmits<{
   ended: []
   error: [error: Event]
   timeupdate: [currentTime: number]
+  loadedmetadata: [duration: number]
 }>()
 
 // Refs
@@ -124,6 +152,7 @@ const formatTime = (time: number): string => {
 // Event handlers
 const onLoadedMetadata = () => {
   if (audioElement.value) {
+    emit('loadedmetadata', audioElement.value.duration)
     duration.value = audioElement.value.duration
     if (props.autoplay) {
       togglePlay()
@@ -153,6 +182,18 @@ const onError = (error: Event) => {
   emit('error', error)
 }
 
+const seekTo = (time: number) => {
+  console.debug('[AudioPlayer] Seeking to:', time)
+  if (audioElement.value) {
+    audioElement.value.currentTime = time
+    // if it is stopped, play it
+    if (!isPlaying.value) {
+      togglePlay()
+    }
+  }
+}
+
+defineExpose({ seekTo })
 // Lifecycle
 onMounted(async () => {
   if (audioElement.value) {
