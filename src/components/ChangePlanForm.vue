@@ -9,7 +9,7 @@
         <template #tooltip>
           <p class="m-0 small" v-html="plan.description" />
         </template>
-        <div class="d-flex align-items-center gap-2 m-2 p-1">
+        <div class="d-flex align-items-center gap-2 m-1 p-1">
           <label
             :class="[
               'border rounded-md shadow-sm d-block py-2 pr-3 pl-2 d-flex m-0',
@@ -49,21 +49,24 @@
         </div>
       </OverlayTrigger>
     </div>
-    <slot
-      name="submit-button"
-      :submit="handleOnSubmit"
-      :disabled="!!pendingPlan || props.currentPlan === selectedPlan"
-    >
-      <button
-        type="button"
+    <!-- optionally toggle the affiliation field -->
+    <div class="position-sticky bottom-0 bg-white border-top mt-2 py-3 w-100">
+      <slot name="form-errors"></slot>
+      <slot
+        name="submit-button"
+        :submit="handleOnSubmit"
         :disabled="!!pendingPlan || props.currentPlan === selectedPlan"
-        class="btn btn-outline-secondary btn-md px-4 border border-dark btn-block"
       >
-        <Icon name="sendMail" />
-        <span class="ml-2">Confirm Plan Change Request</span>
-      </button>
-    </slot>
-    {{ pendingPlan }}
+        <button
+          type="button"
+          :disabled="!!pendingPlan || props.currentPlan === selectedPlan"
+          class="btn btn-outline-secondary btn-md px-4 border border-dark btn-block"
+        >
+          <Icon name="sendMail" />
+          <span class="ml-2">Confirm Plan Change Request</span>
+        </button>
+      </slot>
+    </div>
   </form>
 </template>
 <script setup lang="ts">
