@@ -22,7 +22,7 @@
           :disabled="!src"
         />
         <div class="time-display">
-          <span class="current-time">{{ formatTime(currentTime) }}</span>
+          <span class="current-time">{{ formatTime(currentTime || 0) }}</span>
           <span class="duration">{{ formatTime(duration) }}</span>
         </div>
       </div>
@@ -44,7 +44,7 @@
         />
       </div>
     </div>
-
+    {{ currentTime }}
     <audio
       ref="audioElement"
       :src="src"
@@ -56,24 +56,23 @@
     />
   </div>
 </template>
-
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 
-interface Props {
+interface AudioPlayerProps {
   src?: string
   autoplay?: boolean
   loop?: boolean
   authToken?: string
 }
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<AudioPlayerProps>(), {
   src: '',
   autoplay: false,
   loop: false,
   authToken: '',
 })
-
+const isPlaying = defineModel<boolean>('isPlaying')
+const currentTime = defineModel<number>('currentTime')
 const emit = defineEmits<{
   play: []
   pause: []
@@ -85,28 +84,42 @@ const emit = defineEmits<{
 
 // Refs
 const audioElement = ref<HTMLAudioElement | null>(null)
-const isPlaying = ref(false)
-const currentTime = ref(0)
+
 const duration = ref(0)
 const volume = ref(1)
 const isMuted = ref(false)
 
-// Methods
-const togglePlay = async () => {
+watch(isPlaying, (val) => {
   if (!audioElement.value) return
+  val ? audioElement.value.play() : audioElement.value.pause()
+})
 
-  try {
-    if (isPlaying.value) {
-      audioElement.value.pause()
-      isPlaying.value = false
-      emit('pause')
-    } else {
-      await audioElement.value.play()
-      isPlaying.value = true
-      emit('play')
-    }
-  } catch (error) {
-    console.error('Error playing audio:', error)
+watch(currentTime, (val) => {
+  if (!audioElement.value || !val) return
+  if (Math.abs(audioElement.value.currentTime - val) > 0.5) {
+    console.debug('[AudioPlayer] @currentTime from parent, seeking to:', val)
+    audioElement.value.currentTime = val
+  }
+})
+
+// Methods
+const togglePlay = () => {
+  if (!audioElement.value) return
+  if (isPlaying.value) {
+    audioElement.value.pause()
+    isPlaying.value = false
+    emit('pause')
+  } else {
+    audioElement.value
+      .play()
+      .then(() => {
+        isPlaying.value = true
+        emit('play')
+      })
+      .catch((error) => {
+        console.error('Error playing audio:', error)
+        emit('error', error)
+      })
   }
 }
 
@@ -162,8 +175,7 @@ const onLoadedMetadata = () => {
 
 const onTimeUpdate = () => {
   if (audioElement.value) {
-    currentTime.value = audioElement.value.currentTime
-    emit('timeupdate', currentTime.value)
+    emit('timeupdate', audioElement.value.currentTime)
   }
 }
 
@@ -182,18 +194,6 @@ const onError = (error: Event) => {
   emit('error', error)
 }
 
-const seekTo = (time: number) => {
-  console.debug('[AudioPlayer] Seeking to:', time)
-  if (audioElement.value) {
-    audioElement.value.currentTime = time
-    // if it is stopped, play it
-    if (!isPlaying.value) {
-      togglePlay()
-    }
-  }
-}
-
-defineExpose({ seekTo })
 // Lifecycle
 onMounted(async () => {
   if (audioElement.value) {
