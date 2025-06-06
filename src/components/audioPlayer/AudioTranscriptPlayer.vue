@@ -1,14 +1,16 @@
 <template>
   <div class="AudioTranscriptPlayer">
     <AudioPlayer
+      class="position-sticky top-0"
       :src="props.src"
       :is-playing="isPlaying"
       :current-time="currentTime"
       @loadedmetadata="duration = $event"
       @timeupdate="currentTime = $event"
     />
-    {{ duration }}
+
     <TranscriptViewer
+      :utterance-breaks="props.utteranceBreaks"
       :transcript="transcript"
       :current-time="currentTime"
       :disabled="duration === 0"
@@ -24,10 +26,15 @@ import type { TranscriptWord } from './TranscriptViewer.vue'
 
 export interface AudioTranscriptPlayerProps {
   transcript: TranscriptWord[]
+  utteranceBreaks?: TranscriptWord[]
   src: string
 }
 
-const props = defineProps<AudioTranscriptPlayerProps>()
+const props = withDefaults(defineProps<AudioTranscriptPlayerProps>(), {
+  transcript: () => [],
+  utteranceBreaks: () => [],
+  src: '',
+})
 const currentTime = ref(0)
 const duration = ref(0)
 const isPlaying = ref(false)

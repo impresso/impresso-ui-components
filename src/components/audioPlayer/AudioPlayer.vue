@@ -62,6 +62,7 @@
       @error="onError"
       preload="metadata"
     />
+    {{ currentTime }}
   </div>
 </template>
 <script setup lang="ts">
@@ -100,7 +101,11 @@ const isMuted = ref(false)
 
 watch(isPlaying, (val) => {
   if (!audioElement.value) return
-  val ? audioElement.value.play() : audioElement.value.pause()
+  if (val) {
+    audioElement.value.play()
+  } else {
+    audioElement.value.pause()
+  }
 })
 
 watch(currentTime, (val) => {
