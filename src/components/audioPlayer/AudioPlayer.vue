@@ -1,5 +1,5 @@
 <template>
-  <div class="audio-player">
+  <div class="AudioPlayer">
     <div class="audio-controls">
       <button
         @click="togglePlay"
@@ -7,26 +7,35 @@
         class="play-button"
         :aria-label="isPlaying ? 'Pause' : 'Play'"
       >
-        <span v-if="isPlaying">⏸️</span>
-        <span v-else>▶️</span>
+        <Icon v-if="isPlaying" name="pause" />
+        <Icon v-else name="play" />
       </button>
 
       <div class="progress-container">
+        <div
+          class="progress-bar"
+          :style="{
+            width: `${(currentTime / duration) * 100 || 0}%`,
+            backgroundColor: isPlaying ? '#007bff' : '#ccc',
+          }"
+        ></div>
         <input
           type="range"
           min="0"
+          step="0.01"
           :max="duration"
           :value="currentTime"
           @input="seek"
-          class="progress-bar"
+          class="progress-bar-input"
           :disabled="!src"
         />
         <div class="time-display">
-          <span class="current-time">{{ formatTime(currentTime || 0) }}</span>
-          <span class="duration">{{ formatTime(duration) }}</span>
+          <span class="current-time small">{{
+            formatTime(currentTime || 0)
+          }}</span>
+          <span class="duration small">{{ formatTime(duration) }}</span>
         </div>
       </div>
-
       <div class="volume-container">
         <button @click="toggleMute" class="volume-button">
           <span v-if="isMuted || volume === 0">🔇</span>
@@ -44,7 +53,6 @@
         />
       </div>
     </div>
-    {{ currentTime }}
     <audio
       ref="audioElement"
       :src="src"
@@ -58,6 +66,7 @@
 </template>
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue'
+import Icon from '../Icon.vue'
 
 interface AudioPlayerProps {
   src?: string
@@ -72,7 +81,7 @@ const props = withDefaults(defineProps<AudioPlayerProps>(), {
   authToken: '',
 })
 const isPlaying = defineModel<boolean>('isPlaying')
-const currentTime = defineModel<number>('currentTime')
+const currentTime = defineModel<number>('currentTime', { default: 0 })
 const emit = defineEmits<{
   play: []
   pause: []
@@ -99,6 +108,7 @@ watch(currentTime, (val) => {
   if (Math.abs(audioElement.value.currentTime - val) > 0.5) {
     console.debug('[AudioPlayer] @currentTime from parent, seeking to:', val)
     audioElement.value.currentTime = val
+    emit('timeupdate', val)
   }
 })
 
@@ -128,8 +138,10 @@ const seek = (event: Event) => {
 
   const target = event.target as HTMLInputElement
   const seekTime = parseFloat(target.value)
-  audioElement.value.currentTime = seekTime
+  console.debug('[AudioPlayer] Seeking to:', seekTime)
   currentTime.value = seekTime
+  audioElement.value.currentTime = seekTime
+  emit('timeupdate', seekTime)
 }
 
 const setVolume = (event: Event) => {
@@ -175,6 +187,7 @@ const onLoadedMetadata = () => {
 
 const onTimeUpdate = () => {
   if (audioElement.value) {
+    currentTime.value = audioElement.value.currentTime
     emit('timeupdate', audioElement.value.currentTime)
   }
 }
@@ -208,24 +221,24 @@ onUnmounted(() => {
 })
 </script>
 
-<style scoped>
-.audio-player {
+<style>
+.AudioPlayer {
   background: #f5f5f5;
   border-radius: 8px;
   padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--bs-box-shadow-sm, 0 2px 8px rgba(0, 0, 0, 0.1));
   max-width: 500px;
 }
 
-.audio-controls {
+.AudioPlayer .audio-controls {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacer-2, 10px);
 }
 
-.play-button {
-  background: #007bff;
-  color: white;
+.AudioPlayer .play-button {
+  background: transparent;
+  color: var(--impresso-color-black, blue);
   border: none;
   border-radius: 50%;
   width: 48px;
@@ -238,23 +251,32 @@ onUnmounted(() => {
   transition: background-color 0.2s;
 }
 
-.play-button:hover:not(:disabled) {
-  background: #0056b3;
+.AudioPlayer .play-button:hover:not(:disabled) {
+  background: var(--impresso-color-black-alpha-20, blue);
 }
 
-.play-button:disabled {
+.AudioPlayer .play-button:disabled {
   background: #ccc;
   cursor: not-allowed;
 }
 
-.progress-container {
+.AudioPlayer .progress-container {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  position: relative;
 }
 
-.progress-bar {
+.AudioPlayer .progress-bar {
+  position: absolute;
+  height: 6px;
+  background-color: var(--impresso-color-black, blue) !important;
+  pointer-events: none;
+  border-radius: 3px;
+  transition: none !important;
+}
+.AudioPlayer .progress-bar-input {
   width: 100%;
   height: 6px;
   border-radius: 3px;
@@ -264,29 +286,32 @@ onUnmounted(() => {
   cursor: pointer;
 }
 
-.progress-bar::-webkit-slider-thumb {
+.AudioPlayer .progress-bar-input::-webkit-slider-thumb {
   appearance: none;
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #007bff;
+  background: var(--impresso-color-black, blue);
   cursor: pointer;
+  transition: left 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 0 0 4px var(--impresso-color-black-alpha-20, blue);
 }
 
-.progress-bar::-moz-range-thumb {
+.AudioPlayer .progress-bar-input::-moz-range-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #007bff;
+  background: var(--impresso-color-black, blue);
   cursor: pointer;
   border: none;
+  transition: left 0.2s ease, transform 0.2s ease;
+
+  box-shadow: 0 0 0 4px var(--impresso-color-black-alpha-20, blue);
 }
 
 .time-display {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
-  color: #666;
 }
 
 .volume-container {
