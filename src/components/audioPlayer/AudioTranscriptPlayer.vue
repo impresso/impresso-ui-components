@@ -2,7 +2,7 @@
   <div class="AudioTranscriptPlayer">
     <AudioPlayer
       :src="props.src"
-      ref="audioPlayerRef"
+      :is-playing="isPlaying"
       :current-time="currentTime"
       @loadedmetadata="duration = $event"
       @timeupdate="currentTime = $event"
@@ -27,22 +27,15 @@ export interface AudioTranscriptPlayerProps {
   src: string
 }
 
-type AudioPlayerInstance = ComponentPublicInstance<{
-  seekTo: (time: number) => void
-}>
-
+const props = defineProps<AudioTranscriptPlayerProps>()
 const currentTime = ref(0)
 const duration = ref(0)
-import type { ComponentPublicInstance } from 'vue'
-
-const audioPlayerRef = ref<AudioPlayerInstance | null>(null)
-const props = defineProps<AudioTranscriptPlayerProps>()
+const isPlaying = ref(false)
 
 const handleSeeking = (targetTime: number) => {
   console.debug('[AudioTranscriptPlayer] handleSeeking targetTime:', targetTime)
-
   currentTime.value = targetTime
-  audioPlayerRef.value?.seekTo(targetTime)
+  isPlaying.value = true
 }
 
 function onTranscriptViewerClick(word: TranscriptWord) {
