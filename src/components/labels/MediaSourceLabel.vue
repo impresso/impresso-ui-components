@@ -3,21 +3,20 @@
     <router-link v-if="showLink" :to="routerLinkUrl">
       <span :class="titleClass">{{ title }}</span
       >{{ ' ' }}
-      <span class="small-caps" v-if="showType">{{ t(item.type) }}</span>
+      <span class="small-caps" v-if="showType">{{ $t(item.type) }}</span>
     </router-link>
     <div v-else>
       <span :class="titleClass">{{ title }}</span
       >{{ ' ' }}
-      <span class="small-caps" v-if="showType">{{ t(item.type) }}</span>
+      <span class="small-caps" v-if="showType">{{ $t(item.type) }}</span>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import type { MediaSource } from '../../types'
-
-const { t } = useI18n()
+import { useLegacyT } from '../../utils/i18n'
+const $t = useLegacyT()
 
 export interface MediaSourceLabelProps {
   item: MediaSource
