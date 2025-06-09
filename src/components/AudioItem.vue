@@ -40,7 +40,7 @@
         <span>{{ $d(new Date(item.publicationDate), 'long') }}</span>
       </div>
       <div class="article-meta">
-        <span>{{ t(`contentItem.type.${item.type}`) }}</span>
+        <span>{{ $t(`contentItem.type.${item.type}`) }}</span>
         <span v-if="item.duration"> – {{ item.duration }} </span>
       </div>
       <div v-if="item.excerpt" class="article-excerpt mt-2">
@@ -59,8 +59,8 @@
 import Icon from './Icon.vue'
 import type { AudioContentItem } from '../types'
 import MediaSourceLabel from './labels/MediaSourceLabel.vue'
-import { useI18n } from 'vue-i18n'
-const { t } = useI18n()
+import { useLegacyI18n } from '../utils/i18n'
+const { $t, $d } = useLegacyI18n()
 
 export interface AudioItemProps {
   item: AudioContentItem
