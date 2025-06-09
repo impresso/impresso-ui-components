@@ -15,9 +15,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import type { MediaSource } from '../../types'
-import { useLegacyI18n } from '../../utils/i18n'
-const { $t } = useLegacyI18n()
-
 export interface MediaSourceLabelProps {
   item: MediaSource
   showLink?: boolean

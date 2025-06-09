@@ -59,8 +59,6 @@
 import Icon from './Icon.vue'
 import type { AudioContentItem } from '../types'
 import MediaSourceLabel from './labels/MediaSourceLabel.vue'
-import { useLegacyI18n } from '../utils/i18n'
-const { $t, $d } = useLegacyI18n()
 
 export interface AudioItemProps {
   item: AudioContentItem
