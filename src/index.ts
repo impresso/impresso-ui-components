@@ -1,4 +1,5 @@
 export { default as Alert } from './components/Alert.vue'
+export { default as AudioItem } from './components/AudioItem.vue'
 export { default as Icon } from './components/Icon.vue'
 export { default as ChangePasswordForm } from './components/ChangePasswordForm.vue'
 export { default as ProfileForm } from './components/ProfileForm.vue'
