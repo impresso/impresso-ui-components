@@ -1,7 +1,8 @@
 <template>
   <div class="AudioTranscriptPlayer">
     <AudioPlayer
-      class="position-sticky top-0"
+      class="position-sticky top-0 w-100"
+      style="z-index: 1"
       :src="props.src"
       :is-playing="isPlaying"
       :current-time="currentTime"
