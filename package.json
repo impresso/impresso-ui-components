@@ -31,7 +31,8 @@
   "dependencies": {
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
-    "vue": "^3.5.13"
+    "vue": "^3.5.13",
+    "vue-i18n": "^11.1.5"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.6",
