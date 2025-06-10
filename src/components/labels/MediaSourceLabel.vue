@@ -53,7 +53,8 @@ const title = computed(() => {
 {
   "en": {
     "newspaper_label": "Newspaper",
-    "radio_label": "Radio"
+    "radio_label": "Radio",
+    "radio_broadcast": "Radio broadcast"
   }
 }
 </i18n>

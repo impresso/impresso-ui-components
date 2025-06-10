@@ -36,7 +36,7 @@
           <span class="duration small">{{ formatTime(duration) }}</span>
         </div>
       </div>
-      <div class="volume-container">
+      <div class="volume-container" v-if="enableVolumeControls">
         <button @click="toggleMute" class="volume-button">
           <span v-if="isMuted || volume === 0">🔇</span>
           <span v-else-if="volume < 0.5">🔉</span>
@@ -62,24 +62,25 @@
       @error="onError"
       preload="metadata"
     />
-    {{ currentTime }}
   </div>
 </template>
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import Icon from '../Icon.vue'
-
+import { formatTime } from './utils'
 interface AudioPlayerProps {
   src?: string
   autoplay?: boolean
   loop?: boolean
   authToken?: string
+  enableVolumeControls?: boolean
 }
 const props = withDefaults(defineProps<AudioPlayerProps>(), {
   src: '',
   autoplay: false,
   loop: false,
   authToken: '',
+  enableVolumeControls: false,
 })
 const isPlaying = defineModel<boolean>('isPlaying')
 const currentTime = defineModel<number>('currentTime', { default: 0 })
@@ -171,14 +172,6 @@ const toggleMute = () => {
   }
 }
 
-const formatTime = (time: number): string => {
-  if (isNaN(time) || time === 0) return '0:00'
-
-  const minutes = Math.floor(time / 60)
-  const seconds = Math.floor(time % 60)
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`
-}
-
 // Event handlers
 const onLoadedMetadata = () => {
   if (audioElement.value) {
@@ -227,13 +220,13 @@ onUnmounted(() => {
 </script>
 
 <style>
-.AudioPlayer {
+/* .AudioPlayer {
   background: #f5f5f5;
   border-radius: 8px;
   padding: 16px;
   box-shadow: var(--bs-box-shadow-sm, 0 2px 8px rgba(0, 0, 0, 0.1));
   max-width: 500px;
-}
+} */
 
 .AudioPlayer .audio-controls {
   display: flex;

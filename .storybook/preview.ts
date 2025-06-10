@@ -8,11 +8,11 @@ import '../src/assets/impresso-style.css'
 
 // Create a basic i18n instance
 const i18n = createI18n({
-  legacy: false,
+  legacy: true,
   locale: 'en',
   fallbackLocale: 'en',
   globalInjection: true,
-  messages: {},
+  sharedMessages: {},
   datetimeFormats: {
     en: {
       short: {

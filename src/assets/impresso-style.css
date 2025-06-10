@@ -45,6 +45,7 @@
   --impresso-letter-spacing-smallcaps: 0.08em;
   --impresso-letter-spacing-smallcaps-md: 0.12em;
   --impresso-font-size-smaller: 0.85em;
+  --impresso-font-size-bigger: 1.2em;
   --impresso-wght: 450;
   --impresso-wght-medium: 600;
   --impresso-wght-bold: 700;
@@ -299,6 +300,10 @@ label {
 }
 .font-size-inherit {
   font-size: inherit;
+}
+
+.font-size-bigger {
+  font-size: var(--impresso-font-size-bigger);
 }
 
 .btn-sm,

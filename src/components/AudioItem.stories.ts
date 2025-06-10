@@ -3,7 +3,9 @@ import AudioItem from './AudioItem.vue'
 import type { AudioItemProps } from './AudioItem.vue'
 // import { action } from '@storybook/addon-actions'
 
-import item from '../assets/CFCE-1996-09-08-a-i0001-mock.json'
+import itemA from '../assets/mock-data/CFCE-1996-09-08-a-i0001-mock.json'
+import itemB from '../assets/mock-data/CFCE-1996-09-15-a-i0001.json'
+import itemC from '../assets/mock-data/RDN-1950-01-12-a-r0001-mock.json'
 
 const meta = {
   title: 'Components/AudioItem',
@@ -36,6 +38,19 @@ export default meta
 type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {
-    item,
+    item: itemA,
+    enablePlayer: true,
+  } as AudioItemProps,
+}
+
+export const contentItemB: Story = {
+  args: {
+    item: itemB,
+  } as AudioItemProps,
+}
+
+export const contentItemC: Story = {
+  args: {
+    item: itemC,
   } as AudioItemProps,
 }
