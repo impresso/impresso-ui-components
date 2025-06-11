@@ -1,11 +1,11 @@
 <template>
   <div class="MediaSourceLabel">
-    <router-link v-if="showLink" :to="routerLinkUrl">
+    <!-- <router-link v-if="showLink" :to="routerLinkUrl">
       <span :class="titleClass">{{ title }}</span
       >{{ ' ' }}
       <span class="small-caps" v-if="showType">{{ $t(item.type) }}</span>
-    </router-link>
-    <div v-else>
+    </router-link> -->
+    <div>
       <span :class="titleClass">{{ title }}</span
       >{{ ' ' }}
       <span class="small-caps" v-if="showType">{{ $t(item.type) }}</span>
@@ -27,10 +27,10 @@ const props = withDefaults(defineProps<MediaSourceLabelProps>(), {
   titleClass: 'font-weight-medium text-decoration-underline',
 })
 
-const routerLinkUrl = computed(() => ({
-  name: 'newspaper_metadata',
-  params: { newspaper_uid: props.item.uid },
-}))
+// const routerLinkUrl = computed(() => ({
+//   name: 'newspaper_metadata',
+//   params: { newspaper_uid: props.item.uid ?? props.item.id },
+// }))
 
 const glob = window as any
 

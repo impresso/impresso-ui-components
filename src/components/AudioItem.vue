@@ -1,9 +1,14 @@
 <template>
   <div class="AudioItem d-flex align-items-center">
-    <!-- <div class="flex-shrink-0 mr-2" style="width: 50px" v-if="enablePlayer">
+    <div
+      class="flex-shrink-0 mr-2"
+      style="width: 50px"
+      v-if="enablePlayer"
+      @click="$emit('toggleplay')"
+    >
       <Icon name="pause" v-if="isPlaying" />
       <Icon name="play" v-else />
-    </div> -->
+    </div>
     <div class="flex-grow-1">
       <slot name="title">
         <h2 v-if="item.title" class="mb-0 font-weight-bold font-size-bigger">
@@ -64,7 +69,7 @@
   </div>
 </template>
 <script setup lang="ts">
-// import Icon from './Icon.vue'
+import Icon from './Icon.vue'
 import type { AudioContentItem } from '../types'
 import MediaSourceLabel from './labels/MediaSourceLabel.vue'
 
@@ -89,6 +94,7 @@ const duration = computed(() => formatTime(props.item.duration))
 
 defineEmits<{
   click: []
+  toggleplay: []
 }>()
 </script>
 <i18n lang="json">

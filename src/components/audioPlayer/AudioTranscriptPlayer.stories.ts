@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
 import AudioTranscriptPlayer from './AudioTranscriptPlayer.vue'
 import type { AudioTranscriptPlayerProps } from './AudioTranscriptPlayer.vue'
-import mockdata from '../../assets/mockData.json'
+// import mockdata from '../../assets/mockData.json'
 // import type { TranscriptWord } from './TranscriptViewer.vue'
 // import {
 //   processUtteranceBreaks,
