@@ -11,8 +11,8 @@
     />
 
     <TranscriptViewer
-      :utterance-breaks="props.utteranceBreaks"
-      :transcript="transcript"
+      :utterances="utterances"
+      :rrrebs="rrrebs"
       :current-time="currentTime"
       :disabled="duration === 0"
       @click="onTranscriptViewerClick"
@@ -23,17 +23,17 @@
 import { ref } from 'vue'
 import AudioPlayer from './AudioPlayer.vue'
 import TranscriptViewer from './TranscriptViewer.vue'
-import type { TranscriptWord } from './TranscriptViewer.vue'
+import type { Rrreb, Utterance } from './TranscriptViewer.vue'
 
 export interface AudioTranscriptPlayerProps {
-  transcript: TranscriptWord[]
-  utteranceBreaks?: TranscriptWord[]
+  rrrebs: Rrreb[]
+  utterances: Utterance[]
   src: string
 }
 
 const props = withDefaults(defineProps<AudioTranscriptPlayerProps>(), {
-  transcript: () => [],
-  utteranceBreaks: () => [],
+  rrrebs: () => [],
+  utterances: () => [],
   src: '',
 })
 const currentTime = ref(0)

@@ -1,11 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
 import AudioItem from './AudioItem.vue'
 import type { AudioItemProps } from './AudioItem.vue'
-// import { action } from '@storybook/addon-actions'
-
-import itemA from '../assets/mock-data/CFCE-1996-09-08-a-i0001-mock.json'
-import itemB from '../assets/mock-data/CFCE-1996-09-15-a-i0001.json'
-import itemC from '../assets/mock-data/RDN-1950-01-12-a-r0001-mock.json'
 
 const meta = {
   title: 'Components/AudioItem',
@@ -38,19 +33,28 @@ export default meta
 type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {
-    item: itemA,
-    enablePlayer: true,
-  } as AudioItemProps,
-}
-
-export const contentItemB: Story = {
-  args: {
-    item: itemB,
-  } as AudioItemProps,
-}
-
-export const contentItemC: Story = {
-  args: {
-    item: itemC,
+    item: {
+      uid: 'RDN-1950-01-12-a-i0001',
+      title: 'Accords économiques internationaux',
+      excerpt:
+        'La ronde des nations, revue hebdomadaire de la coopération internationale, réalisée et présentée par Fabrice Lamart. Les accords économiques internati',
+      type: 'audio',
+      radioChannel: 'Chaîne Parisienne (RTF)',
+      publicationDate: '1950-01-12T00:00:00Z',
+      mediaType: 'audio',
+      languageCode: 'fr',
+      originalLanguageCode: 'fr',
+      dataProvider: 'INA',
+      mediaSource: {
+        id: 'RDN',
+        uid: 'RDN',
+        name: 'La ronde des nations',
+        type: 'radio_broadcast',
+      },
+      transcriptLength: 3037,
+      duration: 1033,
+      startTime: 0,
+      copyright: 'in_cpy',
+    },
   } as AudioItemProps,
 }
