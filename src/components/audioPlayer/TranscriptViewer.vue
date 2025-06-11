@@ -1,7 +1,6 @@
 <template>
   <div class="TranscriptViewer">
     <h3>Transcript</h3>
-    {{ currentTime }}
     <p v-for="(utterance, i) in utterances" :key="i">
       <span
         v-for="(idx, j) in utterance.indices"
@@ -9,11 +8,11 @@
         :class="getWordClasses(rrrebs[idx])"
         @click="() => onTranscriptWordClick(rrrebs[idx])"
       >
-        <span class="text-muted small ms-1 ml-1">{{
+        <span v-if="debug" class="text-muted small ms-1 ml-1">{{
           rrrebs[idx].startTime
         }}</span>
         {{ rrrebs[idx].text }}{{ ' ' }}
-        <span class="text-muted small me-1 mr-1">{{
+        <span v-if="debug" class="text-muted small me-1 mr-1">{{
           rrrebs[idx].endTime
         }}</span>
       </span>
@@ -22,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 
 export interface Utterance {
   startTime: number
@@ -42,6 +41,7 @@ export interface TranscriptViewerProps {
   disabled?: boolean
   rrrebs: Rrreb[]
   currentTime: number
+  debug?: boolean
 }
 
 const props = defineProps<TranscriptViewerProps>()
