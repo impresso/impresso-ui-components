@@ -9,24 +9,10 @@
         <h2 v-if="item.title" class="mb-0 font-weight-bold font-size-bigger">
           <RouterLink
             class="text-decoration-underline"
-            v-if="showLink"
             :to="routerLinkUrl"
             v-html="item.title"
           ></RouterLink>
-          <a
-            v-else-if="showHref"
-            v-on:click.prevent="onClick"
-            v-html="item.title"
-          ></a>
-          <span v-else v-html="item.title"></span>
         </h2>
-        <div v-else>
-          <RouterLink v-if="showLink" :to="routerLinkUrl"
-            >(untitled)</RouterLink
-          >
-          <a v-else-if="showHref" v-on:click.prevent="onClick"></a>
-          <span v-else></span>
-        </div>
       </slot>
       <div>
         {{ item.radioChannel }}
@@ -90,14 +76,10 @@ import AudioPlayer from './audioPlayer/AudioPlayer.vue'
 export interface AudioItemProps {
   item: AudioContentItem
   isPlaying?: boolean
-  showLink?: boolean
-  showHref?: boolean
-  routerLinkUrl?: string
+  routerLinkUrl?: string | { name: string; params?: Record<string, any> }
   enablePlayer?: boolean
 }
 const props = withDefaults(defineProps<AudioItemProps>(), {
-  showLink: true,
-  showHref: false,
   isPlaying: false,
   enablePlayer: false,
   routerLinkUrl: '',
