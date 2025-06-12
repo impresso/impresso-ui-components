@@ -46,8 +46,7 @@ const handleSeeking = (targetTime: number) => {
   isPlaying.value = true
 }
 
-function onTranscriptViewerClick(word: TranscriptWord) {
-  console.log('Clicked word:', word)
+function onTranscriptViewerClick(word: Rrreb) {
   handleSeeking(word.startTime)
 }
 </script>
