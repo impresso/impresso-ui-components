@@ -67,7 +67,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import Icon from '../Icon.vue'
-import { formatTime } from './utils'
+import { formatTime } from '../../utils/audio'
 interface AudioPlayerProps {
   src?: string
   autoplay?: boolean

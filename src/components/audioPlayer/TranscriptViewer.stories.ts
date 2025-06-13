@@ -1,13 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
 import TranscriptViewer from './TranscriptViewer.vue'
 import type { TranscriptViewerProps } from './TranscriptViewer.vue'
-import mockdata from '../../assets/mock-data/CFCE-1996-09-08-a-i0001.json'
-import { processMockdata } from '../../utils/audio'
 
-console.log(
-  mockdata,
-  JSON.stringify(processMockdata(mockdata, 'CFCE-1996-09-08-a-i0001'))
-)
 const meta = {
   title: 'audioPlayer/TranscriptViewer',
   component: TranscriptViewer,

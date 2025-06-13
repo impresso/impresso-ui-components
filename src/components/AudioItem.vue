@@ -75,7 +75,7 @@ import MediaSourceLabel from './labels/MediaSourceLabel.vue'
 
 import { computed } from 'vue'
 
-import { formatTime } from './audioPlayer/utils'
+import { formatTime } from '../utils/audio'
 import AudioPlayer from './audioPlayer/AudioPlayer.vue'
 
 export interface AudioItemProps {

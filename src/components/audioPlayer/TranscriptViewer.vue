@@ -1,6 +1,6 @@
 <template>
   <div class="TranscriptViewer">
-    <h3>Transcript</h3>
+    <slot name="header"><h3>Transcript</h3></slot>
     <p v-for="(utterance, i) in utterances" :key="i">
       <span
         v-for="(idx, j) in utterance.indices"

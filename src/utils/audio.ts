@@ -1,10 +1,10 @@
-interface RrrebPlainToken {
+export interface RrrebPlainToken {
   s: number // start index in the transcript
   l: number // length of the token in the transcript
   tc: [number, number] // start time and duration
 }
 
-interface RrrebToken {
+export interface RrrebToken {
   idx: number
   text: string
   startTime: number
@@ -13,7 +13,7 @@ interface RrrebToken {
   end: number // end index in the transcript
 }
 
-interface MockData {
+export interface PartialAudioContentItem {
   transcript: string
   ub_plain: number[]
   rrreb_plain: {
@@ -22,17 +22,20 @@ interface MockData {
   }[]
 }
 
-interface Utterance {
+export interface Utterance {
+  breakPoint?: number // index in the transcript where the utterance ends
   startTime: number
   endTime: number
   indices: number[]
+  start?: number // start index in the transcript
+  end?: number // end index in the transcript
 }
 
 export const generateRrrebsFromTranscript = (
-  mockdata: MockData,
+  item: PartialAudioContentItem,
   id: string
 ): RrrebToken[] => {
-  const rrreb = mockdata.rrreb_plain.find((d) => d.id === id)
+  const rrreb = item.rrreb_plain.find((d) => d.id === id)
   if (!rrreb) {
     console.warn(`No rrreb_plain data found for id: ${id}`)
     return []
@@ -47,7 +50,7 @@ export const generateRrrebsFromTranscript = (
     (token: RrrebPlainToken, i: number) => {
       const start = token.s
       const length = token.l
-      const text = mockdata.transcript.slice(start, start + length)
+      const text = item.transcript.slice(start, start + length)
       const startTime = token.tc[0]
       const duration = token.tc[1]
       const endTime = startTime + duration
@@ -62,7 +65,7 @@ export const generateRrrebsFromTranscript = (
     // Extract text directly from transcript using start/end indices
     const mergedStart = buffer[0].start
     const mergedEnd = buffer[buffer.length - 1].end
-    const mergedText = mockdata.transcript.slice(mergedStart, mergedEnd)
+    const mergedText = item.transcript.slice(mergedStart, mergedEnd)
 
     const startTime = buffer[0].startTime
     const endTime = buffer[buffer.length - 1].endTime
@@ -107,45 +110,44 @@ export const generateRrrebsFromTranscript = (
 
   return grouped
 }
-// // }
-// console.log(
-//   'enrichedTranscript',
-//   JSON.stringify(
-//     processUtteranceBreaks(mockdata as unknown as MockData),
-//     null,
-//     2
-//   )
-// )
 
-export const processMockdata = (
-  mockdata: MockData,
+export const processPartialAudioContentItem = (
+  item: PartialAudioContentItem,
   id: string
 ): { utterances: Utterance[]; rrrebs: RrrebToken[] } => {
-  const rrrebTokens: RrrebToken[] = generateRrrebsFromTranscript(mockdata, id)
+  const rrrebTokens: RrrebToken[] = generateRrrebsFromTranscript(item, id)
   const utterances: Utterance[] = []
-  // add 0 to the beginning of ub_plain if not present
-  if (mockdata.ub_plain[0] !== 0) {
-    mockdata.ub_plain.unshift(0)
-  }
-  for (let i = 0; i < mockdata.ub_plain.length - 1; i++) {
-    const startIdx = mockdata.ub_plain[i]
-    const endIdx = mockdata.ub_plain[i + 1]
 
-    // Find tokens within this range
-    const rrrebTokensInRange = rrrebTokens.filter(
-      (t) => t.start >= startIdx && t.end < endIdx
-    )
+  let tokenIdx = 0
+  for (let i = 0; i < item.ub_plain.length; i++) {
+    const breakPoint = item.ub_plain[i]
+    const tokenIndices: number[] = []
 
-    if (rrrebTokensInRange.length === 0) continue // skip if no tokens
-
-    const startTime = rrrebTokensInRange[0].startTime
-    const lastToken = rrrebTokensInRange[rrrebTokensInRange.length - 1]
-    const endTime = lastToken.endTime // start + duration
+    while (
+      tokenIdx < rrrebTokens.length &&
+      rrrebTokens[tokenIdx].start < breakPoint
+    ) {
+      tokenIndices.push(tokenIdx)
+      tokenIdx++
+    }
 
     utterances.push({
-      startTime,
-      endTime,
-      indices: rrrebTokensInRange.map((t) => t.idx),
+      breakPoint,
+      startTime: rrrebTokens[tokenIndices[0]].startTime,
+      endTime: rrrebTokens[tokenIndices[tokenIndices.length - 1]].endTime,
+      start: rrrebTokens[tokenIndices[0]].start,
+      end: rrrebTokens[tokenIndices[tokenIndices.length - 1]].end,
+      indices: tokenIndices,
+    })
+  }
+  // Handle any remaining tokens after the last breakpoint
+  if (tokenIdx < rrrebTokens.length) {
+    utterances.push({
+      startTime: rrrebTokens[tokenIdx].startTime,
+      endTime: rrrebTokens[rrrebTokens.length - 1].endTime,
+      start: rrrebTokens[tokenIdx].start,
+      end: rrrebTokens[rrrebTokens.length - 1].end,
+      indices: rrrebTokens.slice(tokenIdx).map((t) => t.idx),
     })
   }
 
@@ -153,4 +155,14 @@ export const processMockdata = (
     utterances,
     rrrebs: rrrebTokens,
   }
+}
+
+export const formatTime = (time: number): string => {
+  if (isNaN(time) || time === 0) return '00:00:00'
+  const hours = Math.floor(time / 3600)
+  const minutes = Math.floor((time % 3600) / 60)
+  const seconds = Math.floor(time % 60)
+  return [hours, minutes, seconds]
+    .map((d) => d.toString().padStart(2, '0'))
+    .join(':')
 }
