@@ -215,7 +215,7 @@
   </form>
 </template>
 <script setup lang="ts">
-import useVuelidate, { type Validation } from '@vuelidate/core'
+import useVuelidate from '@vuelidate/core'
 import Icon from './Icon.vue'
 import Alert from './Alert.vue'
 import AcceptTermsOfUse from './AcceptTermsOfUse.vue'

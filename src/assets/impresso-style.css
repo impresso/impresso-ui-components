@@ -1,7 +1,6 @@
 @font-face {
   font-family: 'Satoshi-Variable';
-  src:
-    url('/assets/fonts/Satoshi-Variable.woff2') format('woff2'),
+  src: url('/assets/fonts/Satoshi-Variable.woff2') format('woff2'),
     url('/assets/fonts/Satoshi-Variable.woff') format('woff'),
     url('/assets/fonts/Satoshi-Variable.ttf') format('truetype');
   font-weight: 300 900;
@@ -11,8 +10,7 @@
 
 @font-face {
   font-family: 'Satoshi-VariableItalic';
-  src:
-    url('/assets/fonts/Satoshi-VariableItalic.woff2') format('woff2'),
+  src: url('/assets/fonts/Satoshi-VariableItalic.woff2') format('woff2'),
     url('/assets/fonts/Satoshi-VariableItalic.woff') format('woff'),
     url('/assets/fonts/Satoshi-VariableItalic.ttf') format('truetype');
   font-weight: 300 900;
@@ -34,7 +32,7 @@
   --impresso-color-black-alpha-20: rgba(52, 58, 64, 0.2);
   --impresso-color-black-alpha-30: rgba(52, 58, 64, 0.3);
   --impresso-color-black-rgb: 52, 58, 64;
-
+  --impresso-color-deep-purple: #17191c;
   --impresso-color-pastel-blue: rgba(86, 204, 242);
   --impresso-color-pastel-blue-alpha-20: rgba(86, 204, 242, 0.2);
 
@@ -47,6 +45,7 @@
   --impresso-letter-spacing-smallcaps: 0.08em;
   --impresso-letter-spacing-smallcaps-md: 0.12em;
   --impresso-font-size-smaller: 0.85em;
+  --impresso-font-size-bigger: 1.2em;
   --impresso-wght: 450;
   --impresso-wght-medium: 600;
   --impresso-wght-bold: 700;
@@ -120,8 +119,8 @@
   --bs-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
   --bs-box-shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.125);
   /* Original: --bs-box-shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); */
-  --bs-box-shadow-md:
-    rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
+  --bs-box-shadow-md: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
+    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
     rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
   --bs-box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
   --bs-box-shadow-lg-darker: 0 1rem 3rem rgba(0, 0, 0, 0.29);
@@ -303,6 +302,10 @@ label {
   font-size: inherit;
 }
 
+.font-size-bigger {
+  font-size: var(--impresso-font-size-bigger);
+}
+
 .btn-sm,
 .btn-group-sm > .btn {
   font-size: var(--impresso-font-size-smallcaps);
@@ -441,8 +444,7 @@ ul.nav.nav-pills .nav-item .nav-link.active {
   color: var(--impresso-color-black);
   font-weight: var(--impresso-wght-smallcaps-bold);
   font-variation-settings: 'wght' var(--impresso-wght-smallcaps-bold);
-  box-shadow:
-    var(--clr-grey-200) 0px 2px 0px 0px,
+  box-shadow: var(--clr-grey-200) 0px 2px 0px 0px,
     var(--clr-grey-200) 0px 2px 0px 0px;
   border-bottom: 1px solid var(--clr-grey-200);
 }

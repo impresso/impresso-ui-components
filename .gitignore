@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 
+src/assets/mock-data/*
+!src/assets/mock-data/.gitkeep
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -25,3 +27,4 @@ dist-ssr
 
 *storybook.log
 
+src/logic/parse/transcript.ts
