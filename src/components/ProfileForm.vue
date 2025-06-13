@@ -57,7 +57,7 @@
             id="institutional-url"
             name="institutional-url"
             type="url"
-            :required="doesPlanRequireAffiliation"
+            :required="doesPlanRequireInsitutionalUrl"
             autocomplete="url"
             v-model.trim="formData.institutionalUrl"
             :class="{
@@ -102,7 +102,7 @@
           <bFormInput
             id="lastname"
             name="lastname"
-            :required="doesPlanRequireAffiliation"
+            required
             autocomplete="url"
             v-model.trim="formData.lastname"
             :class="{
@@ -149,7 +149,7 @@
             id="repeatPassword"
             name="repeatPassword"
             type="password"
-            :required="doesPlanRequireAffiliation"
+            required
             autocomplete="new-password"
             v-model.trim="formData.repeatPassword"
             :class="{
@@ -246,6 +246,7 @@ export interface ProfileFormProps {
   initialValues?: ProfileFormPayload
   hideAffiliationFields?: boolean
   doesPlanRequireAffiliation?: boolean
+  doesPlanRequireInsitutionalUrl?: boolean
   isLoading?: boolean
   mode?: 'create' | 'edit'
 }
@@ -286,27 +287,29 @@ const formRules = computed(
   } => {
     let affiliationRules: { affiliation?: any; institutionalUrl?: any } = {}
     if (!props.hideAffiliationFields) {
-      affiliationRules.affiliation = props.doesPlanRequireAffiliation
-        ? {
-            $autoDirty: true,
-            required,
-            minLength: minLength(2),
-          }
-        : {}
-      affiliationRules.institutionalUrl = {
-        $autoDirty: true,
-        required: false,
-        urlRegex: helpers.withMessage(
-          'Please enter a valid URL',
-          (value: string) => {
-            if (!value || value.length === 0) {
-              return true
+      if (props.doesPlanRequireAffiliation) {
+        affiliationRules.affiliation = {
+          $autoDirty: true,
+          required,
+          minLength: minLength(2),
+        }
+      }
+      if (props.doesPlanRequireInsitutionalUrl) {
+        affiliationRules.institutionalUrl = {
+          $autoDirty: true,
+          required: false,
+          urlRegex: helpers.withMessage(
+            'Please enter a valid URL',
+            (value: string) => {
+              if (!value || value.length === 0) {
+                return true
+              }
+              const urlPattern =
+                /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/
+              return urlPattern.test(value)
             }
-            const urlPattern =
-              /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/
-            return urlPattern.test(value)
-          }
-        ),
+          ),
+        }
       }
     }
 
