@@ -2,7 +2,7 @@
   <form
     class="ChangePlanForm"
     :class="{ 'd-flex flex-wrap align-items-center': props.inline }"
-    @submit="handleOnSubmit"
+    @submit="submitForm"
   >
     <div v-for="plan in props.availablePlans" :key="plan.name">
       <OverlayTrigger :disabled="!inline" :placement="'bottom'">
@@ -50,15 +50,106 @@
       </OverlayTrigger>
     </div>
     <!-- optionally toggle the affiliation field -->
+    <div
+      class="container-fluid mt-3 border-top pt-3"
+      v-if="requireAffiliation || requireInstitutionalUrl"
+    >
+      <p>Please review and update your information below:</p>
+      <BFormGroup
+        id="input-group-1"
+        label="Institution Email *"
+        label-for="email"
+        :description="(v$.email?.$errors[0]?.$message as string)"
+      >
+        <BFormInput
+          id="email"
+          name="email"
+          type="email"
+          required
+          autocomplete="email"
+          :class="{
+            'border-danger': v$.email?.$error,
+            'border-success': !v$.email?.$error && v$.email?.$dirty,
+          }"
+          class="rounded-sm shadow-sm"
+          v-model.trim="formData.email"
+        ></BFormInput>
+      </BFormGroup>
+      <p class="text-muted very-small pt-0 px-3">
+        Note: for Student User or Academic User plans, your institution email
+        address is
+        <b>required</b>.
+      </p>
+      <div class="row">
+        <div class="col-md-6">
+          <BFormGroup
+            label="Affiliation"
+            label-for="affiliation"
+            :description="(v$.affiliation?.$errors[0]?.$message as string)"
+          >
+            <bFormInput
+              id="affiliation"
+              name="affiliation"
+              :required="requireAffiliation"
+              v-model.trim="formData.affiliation"
+              :class="{
+                'border-danger': v$.affiliation?.$error,
+                'border-success':
+                  !v$.affiliation?.$error && v$.affiliation?.$dirty,
+              }"
+              class="rounded-sm shadow-sm"
+              placeholder="University, Company, ..."
+            ></bFormInput>
+          </BFormGroup>
+        </div>
+        <div class="col-md-6" v-if="requireInstitutionalUrl">
+          <BFormGroup
+            label="Institutional URL"
+            label-for="institutional-url"
+            :description="(v$.institutionalUrl?.$errors[0]?.$message as string)"
+          >
+            <bFormInput
+              id="institutional-url"
+              name="institutional-url"
+              type="url"
+              :required="requireInstitutionalUrl"
+              autocomplete="url"
+              v-model.trim="formData.institutionalUrl"
+              :class="{
+                'border-danger': v$.institutionalUrl?.$error,
+                'border-success':
+                  !v$.institutionalUrl?.$error && v$.institutionalUrl?.$dirty,
+              }"
+              class="rounded-sm shadow-sm"
+              placeholder="https://"
+            ></bFormInput>
+          </BFormGroup>
+        </div>
+      </div>
+    </div>
     <div class="position-sticky bottom-0 bg-white border-top mt-2 py-3 w-100">
-      <slot name="form-errors"></slot>
+      <slot name="form-errors">
+        <Alert type="warning" class="mb-3" role="alert" v-if="v$.$error">
+          <div>
+            Please correct the errors in the form before submitting:
+            <ul class="m-0">
+              <li v-for="error in v$.$errors" :key="error.$uid">
+                <b>{{ error.$property }}</b
+                >:
+                {{ error.$message }}
+              </li>
+            </ul>
+          </div>
+        </Alert>
+      </slot>
       <slot
         name="submit-button"
-        :submit="handleOnSubmit"
+        :submit="submitForm"
         :disabled="!!pendingPlan || props.currentPlan === selectedPlan"
       >
         <button
           type="button"
+          @click="submitForm"
           :disabled="!!pendingPlan || props.currentPlan === selectedPlan"
           class="btn btn-outline-secondary btn-md px-4 border border-dark btn-block"
         >
@@ -71,14 +162,21 @@
 </template>
 <script setup lang="ts">
 import Icon from './Icon.vue'
-import { ref, watch } from 'vue'
+import Alert from './Alert.vue'
+import { computed, reactive, ref, watch } from 'vue'
 import OverlayTrigger from './OverlayTrigger.vue'
-
+import useVuelidate from '@vuelidate/core'
+import { email, helpers, minLength, required } from '@vuelidate/validators'
+import BFormGroup from './legacy/BFormGroup.vue'
+import BFormInput from './legacy/BFormInput.vue'
 /**
  * Type definitions for the form payload
  */
 export type ChangePlanFormPayload = {
   plan: string
+  email?: string
+  affiliation?: string
+  institutionalUrl?: string
 }
 
 export interface ChangePlanFormProps {
@@ -87,12 +185,17 @@ export interface ChangePlanFormProps {
   pendingPlan?: string
   rejectedPlan?: string
   availablePlans?: AvailablePlan[]
+  currentEmail?: string
+  currentAffiliation?: string
+  currentInstitutionalUrl?: string
 }
 
 export type AvailablePlan = {
   name: string
   label: string
   description: string
+  requireAffiliation?: boolean
+  requireInstitutionalUrl?: boolean
 }
 
 /**
@@ -101,13 +204,83 @@ export type AvailablePlan = {
 const props = withDefaults(defineProps<ChangePlanFormProps>(), {
   // Whether the form is displayed inline or not
   inline: false,
+  currentAffiliation: '',
+  currentInstitutionalUrl: '',
+  currentEmail: '',
   availablePlans: () => [],
 })
 
-const emits = defineEmits(['submit', 'change'])
+const emit = defineEmits<{
+  submit: [payload: ChangePlanFormPayload]
+  change: [payload: ChangePlanFormPayload]
+}>()
 
 const selectedPlan = ref<string | undefined>(props.currentPlan)
-
+const formData = reactive<{
+  affiliation: string
+  institutionalUrl: string
+  email: string
+}>({
+  affiliation: props.currentAffiliation,
+  institutionalUrl: props.currentInstitutionalUrl,
+  email: props.currentEmail,
+})
+const requireAffiliation = computed(() => {
+  return !!props.availablePlans.find((d) => d.name === selectedPlan.value)
+    ?.requireAffiliation
+})
+const requireInstitutionalUrl = computed(() => {
+  return !!props.availablePlans.find((d) => d.name === selectedPlan.value)
+    ?.requireInstitutionalUrl
+})
+const formRules = computed(
+  (): {
+    email?: string
+    affiliation?: string
+    institutionalUrl?: string
+  } => {
+    let affiliationRules: {
+      email?: any
+      affiliation?: any
+      institutionalUrl?: any
+    } = {}
+    if (requireAffiliation.value || requireInstitutionalUrl.value) {
+      affiliationRules.email = {
+        required,
+        minLength: minLength(4),
+        email,
+        $autoDirty: true,
+      }
+    }
+    if (requireAffiliation.value) {
+      affiliationRules.affiliation = {
+        $autoDirty: true,
+        required,
+        minLength: minLength(2),
+      }
+    }
+    if (requireInstitutionalUrl.value) {
+      affiliationRules.institutionalUrl = {
+        $autoDirty: true,
+        required,
+        urlRegex: helpers.withMessage(
+          'Please enter a valid URL',
+          (value: string) => {
+            if (!value || value.length === 0) {
+              return true
+            }
+            const urlPattern =
+              /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/
+            return urlPattern.test(value)
+          }
+        ),
+      }
+    }
+    return affiliationRules
+  }
+)
+// Initialize validation
+const v$ = useVuelidate(formRules, formData)
 /**
  * Watches for changes in the plan prop and updates selectedPlan
  */
@@ -118,24 +291,52 @@ watch(
   }
 )
 
+function getPayloadForPlan(planName: string): ChangePlanFormPayload {
+  const payload: ChangePlanFormPayload = {
+    plan: planName,
+  }
+  if (requireAffiliation.value || requireInstitutionalUrl.value) {
+    payload.email = formData.email
+  }
+  if (requireAffiliation.value) {
+    payload.affiliation = formData.affiliation
+  }
+  if (requireInstitutionalUrl.value) {
+    payload.institutionalUrl = formData.institutionalUrl
+  }
+  return payload
+}
 // if selectedPlan change,  emits('change', { plan: newPlan })
 watch(
   () => selectedPlan.value,
   (newPlan) => {
-    emits('change', { plan: newPlan })
+    if (!newPlan) {
+      return
+    }
+    emit('change', getPayloadForPlan(newPlan))
   }
 )
 
 /**
  * Handles form submission
  */
-const handleOnSubmit = (event: Event) => {
+const submitForm = async (event: Event) => {
   event.preventDefault()
-  if (selectedPlan.value) {
-    emits('submit', { plan: selectedPlan.value })
-  } else {
-    console.error('Selected plan is undefined')
+  // check that there is no error in the form
+
+  if (requireAffiliation.value || requireInstitutionalUrl.value) {
+    const isFormValid = await v$.value.$validate()
+    console.debug('[ChangePlanForm] @submitForm:', isFormValid)
+    if (!isFormValid) {
+      console.warn('Form validation failed:', v$.value.$errors)
+      return
+    }
   }
+  if (!selectedPlan.value) {
+    console.warn('No plan selected')
+    return
+  }
+  emit('submit', getPayloadForPlan(selectedPlan.value))
 }
 </script>
 
