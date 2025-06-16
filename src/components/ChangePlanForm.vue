@@ -51,83 +51,96 @@
     </div>
     <!-- optionally toggle the affiliation field -->
     <div
-      class="container-fluid mt-3 border-top pt-3"
-      v-if="requireAffiliation || requireInstitutionalUrl"
+      style="overflow: hidden"
+      class="toggleHeightFieldsContainer border-top py-0 px-2"
+      ref="toggleHeightFieldsContainerRef"
     >
-      <p>Please review and update your information below:</p>
-      <BFormGroup
-        id="input-group-1"
-        label="Institution Email *"
-        label-for="email"
-        :description="(v$.email?.$errors[0]?.$message as string)"
+      <div
+        :class="{
+          enabled: requireAffiliation || requireInstitutionalUrl,
+        }"
       >
-        <BFormInput
-          id="email"
-          name="email"
-          type="email"
-          required
-          autocomplete="email"
-          :class="{
-            'border-danger': v$.email?.$error,
-            'border-success': !v$.email?.$error && v$.email?.$dirty,
-          }"
-          class="rounded-sm shadow-sm"
-          v-model.trim="formData.email"
-        ></BFormInput>
-      </BFormGroup>
-      <p class="text-muted very-small pt-0 px-3">
-        Note: for Student User or Academic User plans, your institution email
-        address is
-        <b>required</b>.
-      </p>
-      <div class="row">
-        <div class="col-md-6">
-          <BFormGroup
-            label="Affiliation"
-            label-for="affiliation"
-            :description="(v$.affiliation?.$errors[0]?.$message as string)"
-          >
-            <bFormInput
-              id="affiliation"
-              name="affiliation"
-              :required="requireAffiliation"
-              v-model.trim="formData.affiliation"
-              :class="{
-                'border-danger': v$.affiliation?.$error,
-                'border-success':
-                  !v$.affiliation?.$error && v$.affiliation?.$dirty,
-              }"
-              class="rounded-sm shadow-sm"
-              placeholder="University, Company, ..."
-            ></bFormInput>
-          </BFormGroup>
-        </div>
-        <div class="col-md-6" v-if="requireInstitutionalUrl">
-          <BFormGroup
-            label="Institutional URL"
-            label-for="institutional-url"
-            :description="(v$.institutionalUrl?.$errors[0]?.$message as string)"
-          >
-            <bFormInput
-              id="institutional-url"
-              name="institutional-url"
-              type="url"
-              :required="requireInstitutionalUrl"
-              autocomplete="url"
-              v-model.trim="formData.institutionalUrl"
-              :class="{
-                'border-danger': v$.institutionalUrl?.$error,
-                'border-success':
-                  !v$.institutionalUrl?.$error && v$.institutionalUrl?.$dirty,
-              }"
-              class="rounded-sm shadow-sm"
-              placeholder="https://"
-            ></bFormInput>
-          </BFormGroup>
-        </div>
+        <p class="pt-3">Please review and update your information below:</p>
+        <BFormGroup
+          id="input-group-1"
+          label="Institution Email *"
+          label-for="email"
+          :description="(v$.email?.$errors[0]?.$message as string)"
+        >
+          <BFormInput
+            id="email"
+            name="email"
+            type="email"
+            required
+            autocomplete="email"
+            :class="{
+              'border-danger': v$.email?.$error,
+              'border-success': !v$.email?.$error && v$.email?.$dirty,
+            }"
+            class="rounded-sm shadow-sm"
+            v-model.trim="formData.email"
+          ></BFormInput>
+        </BFormGroup>
+        <p class="text-muted very-small pt-0 px-3">
+          Note: for Student User or Academic User plans, your institution email
+          address is
+          <b>required</b>.
+        </p>
+      </div>
+      <div
+        :class="{
+          enabled: requireAffiliation,
+        }"
+      >
+        <BFormGroup
+          label="Affiliation"
+          label-for="affiliation"
+          :description="(v$.affiliation?.$errors[0]?.$message as string)"
+        >
+          <bFormInput
+            id="affiliation"
+            name="affiliation"
+            :required="requireAffiliation"
+            v-model.trim="formData.affiliation"
+            :class="{
+              'border-danger': v$.affiliation?.$error,
+              'border-success':
+                !v$.affiliation?.$error && v$.affiliation?.$dirty,
+            }"
+            class="rounded-sm shadow-sm"
+            placeholder="University, Company, ..."
+          ></bFormInput>
+        </BFormGroup>
+      </div>
+      <div
+        :class="{
+          enabled: requireInstitutionalUrl,
+        }"
+      >
+        <BFormGroup
+          label="Institutional URL"
+          label-for="institutional-url"
+          :description="(v$.institutionalUrl?.$errors[0]?.$message as string)"
+        >
+          <bFormInput
+            id="institutional-url"
+            name="institutional-url"
+            type="url"
+            :required="requireInstitutionalUrl"
+            autocomplete="url"
+            v-model.trim="formData.institutionalUrl"
+            :class="{
+              'border-danger': v$.institutionalUrl?.$error,
+              'border-success':
+                !v$.institutionalUrl?.$error && v$.institutionalUrl?.$dirty,
+            }"
+            class="rounded-sm shadow-sm"
+            placeholder="https://"
+          ></bFormInput>
+        </BFormGroup>
       </div>
     </div>
-    <div class="position-sticky bottom-0 bg-white border-top mt-2 py-3 w-100">
+    <div class="position-sticky py-3 bottom-0 bg-white w-100">
       <slot name="form-errors">
         <Alert type="warning" class="mb-3" role="alert" v-if="v$.$error">
           <div>
@@ -163,7 +176,7 @@
 <script setup lang="ts">
 import Icon from './Icon.vue'
 import Alert from './Alert.vue'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, nextTick, reactive, ref, watch } from 'vue'
 import OverlayTrigger from './OverlayTrigger.vue'
 import useVuelidate from '@vuelidate/core'
 import { email, helpers, minLength, required } from '@vuelidate/validators'
@@ -216,6 +229,8 @@ const emit = defineEmits<{
 }>()
 
 const selectedPlan = ref<string | undefined>(props.currentPlan)
+// Template ref for the container
+const toggleHeightFieldsContainerRef = ref<HTMLElement>()
 const formData = reactive<{
   affiliation: string
   institutionalUrl: string
@@ -233,6 +248,10 @@ const requireInstitutionalUrl = computed(() => {
   return !!props.availablePlans.find((d) => d.name === selectedPlan.value)
     ?.requireInstitutionalUrl
 })
+const showAdditionalFields = computed(() => {
+  return +requireAffiliation.value + +requireInstitutionalUrl.value
+})
+
 const formRules = computed(
   (): {
     email?: string
@@ -279,17 +298,6 @@ const formRules = computed(
     return affiliationRules
   }
 )
-// Initialize validation
-const v$ = useVuelidate(formRules, formData)
-/**
- * Watches for changes in the plan prop and updates selectedPlan
- */
-watch(
-  () => props.currentPlan,
-  (newPlan) => {
-    selectedPlan.value = newPlan
-  }
-)
 
 function getPayloadForPlan(planName: string): ChangePlanFormPayload {
   const payload: ChangePlanFormPayload = {
@@ -306,6 +314,35 @@ function getPayloadForPlan(planName: string): ChangePlanFormPayload {
   }
   return payload
 }
+// Initialize validation
+const v$ = useVuelidate(formRules, formData)
+/**
+ * Watches for changes in the plan prop and updates selectedPlan
+ */
+watch(
+  () => props.currentPlan,
+  (newPlan) => {
+    selectedPlan.value = newPlan
+  }
+)
+watch(showAdditionalFields, async (newValue: number) => {
+  await nextTick()
+
+  const container = toggleHeightFieldsContainerRef.value
+  if (!container) return
+
+  const children = Array.from(container.children) as HTMLElement[]
+
+  const totalHeight = children
+    .filter((child) => child.classList.contains('enabled'))
+    .reduce((sum, el) => {
+      const bbox = el.getBoundingClientRect()
+      return sum + bbox.height + 20
+    }, 0)
+
+  container.style.height = newValue > 0 ? `${totalHeight}px` : '0px'
+})
+
 // if selectedPlan change,  emits('change', { plan: newPlan })
 watch(
   () => selectedPlan.value,
@@ -357,5 +394,18 @@ const submitForm = async (event: Event) => {
   border-color: var(--info-darker) !important;
   /* add semi transparent shadow, solid */
   box-shadow: 0 0 0 4px rgba(var(--info-rgb), 0.7) !important;
+}
+.ChangePlanForm .toggleHeightFieldsContainer {
+  height: 0px;
+  transition: height 0.3s var(--impresso-transition-ease);
+  overflow: hidden;
+}
+.ChangePlanForm .toggleHeightFieldsContainer > div {
+  position: relative;
+  opacity: 0;
+  transition: opacity 0.3s var(--impresso-transition-ease);
+}
+.ChangePlanForm .toggleHeightFieldsContainer > div.enabled {
+  opacity: 1;
 }
 </style>
