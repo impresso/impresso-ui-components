@@ -198,6 +198,8 @@ export interface ChangePlanFormProps {
   pendingPlan?: string
   rejectedPlan?: string
   availablePlans?: AvailablePlan[]
+  // if it is true, the form will show additional fields for affiliation and institutional URL
+  enableAdditionalFields?: boolean
   currentEmail?: string
   currentAffiliation?: string
   currentInstitutionalUrl?: string
@@ -217,6 +219,7 @@ export type AvailablePlan = {
 const props = withDefaults(defineProps<ChangePlanFormProps>(), {
   // Whether the form is displayed inline or not
   inline: false,
+  enableAdditionalFields: true,
   currentAffiliation: '',
   currentInstitutionalUrl: '',
   currentEmail: '',
