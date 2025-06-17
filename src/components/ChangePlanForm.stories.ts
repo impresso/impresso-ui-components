@@ -34,7 +34,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'A form for changing the plan of a user. It allows users to select from available plans and submit their choice.',
+          'A form for changing the plan of a user. It allows users to select from available plans and submit their choice. If the plan has `requireAffiliation` or `requireInstitutionalUrl` set to true, the form will show additional fields for affiliation and institutional URL. To disable the additional fields, e.g. when this form is just part of another component, please set `showAdditionalFields` to false.',
       },
     },
   },
@@ -99,6 +99,7 @@ export const AsInlineForm: Story = {
     inline: true,
     isLoading: false,
     availablePlans: AvailablePlans,
+    enableAdditionalFields: true,
     onChange: action('change'),
     onSubmit: action('submit'),
     currentPlan: 'plan-basic',
@@ -109,11 +110,27 @@ export const WithExistingProfile: Story = {
     inline: true,
     isLoading: false,
     availablePlans: AvailablePlans,
+    enableAdditionalFields: true,
     currentInstitutionalUrl: 'https://example.edu',
     currentAffiliation: 'Example University',
     currentEmail: 'student@example.edu',
     onChange: action('change'),
     onSubmit: action('submit'),
     currentPlan: 'plan-basic',
+  } as ChangePlanFormProps,
+}
+
+export const WithoutShowingAdditionalFields: Story = {
+  args: {
+    inline: true,
+    isLoading: false,
+    availablePlans: AvailablePlans,
+    enableAdditionalFields: false,
+    currentInstitutionalUrl: 'https://example.edu',
+    currentAffiliation: 'Example University',
+    currentEmail: 'student@example.edu',
+    onChange: action('change'),
+    onSubmit: action('submit'),
+    currentPlan: 'plan-none',
   } as ChangePlanFormProps,
 }

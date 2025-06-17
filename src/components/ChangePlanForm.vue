@@ -219,7 +219,7 @@ export type AvailablePlan = {
 const props = withDefaults(defineProps<ChangePlanFormProps>(), {
   // Whether the form is displayed inline or not
   inline: false,
-  enableAdditionalFields: true,
+  enableAdditionalFields: false,
   currentAffiliation: '',
   currentInstitutionalUrl: '',
   currentEmail: '',
@@ -252,6 +252,9 @@ const requireInstitutionalUrl = computed(() => {
     ?.requireInstitutionalUrl
 })
 const showAdditionalFields = computed(() => {
+  if (!props.enableAdditionalFields) {
+    return 0
+  }
   return +requireAffiliation.value + +requireInstitutionalUrl.value
 })
 
@@ -266,6 +269,9 @@ const formRules = computed(
       affiliation?: any
       institutionalUrl?: any
     } = {}
+    if (!props.enableAdditionalFields) {
+      return affiliationRules
+    }
     if (requireAffiliation.value || requireInstitutionalUrl.value) {
       affiliationRules.email = {
         required,
@@ -305,6 +311,9 @@ const formRules = computed(
 function getPayloadForPlan(planName: string): ChangePlanFormPayload {
   const payload: ChangePlanFormPayload = {
     plan: planName,
+  }
+  if (!props.enableAdditionalFields) {
+    return payload
   }
   if (requireAffiliation.value || requireInstitutionalUrl.value) {
     payload.email = formData.email
