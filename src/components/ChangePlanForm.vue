@@ -138,6 +138,11 @@
             placeholder="https://"
           ></bFormInput>
         </BFormGroup>
+        <p class="text-muted very-small pt-0 px-3">
+          Note: <b>Required for Academic User Plan</b>. Enter a valid URL that
+          confirms your enrollment. This could be a link to your student profile
+          or dashboard on your institution's official website.
+        </p>
       </div>
     </div>
     <div class="position-sticky py-3 bottom-0 bg-white w-100">
@@ -167,7 +172,7 @@
           class="btn btn-outline-secondary btn-md px-4 border border-dark btn-block"
         >
           <Icon name="sendMail" />
-          <span class="ml-2">Confirm Plan Change Request</span>
+          <span class="ml-2" v-html="submitLabel"></span>
         </button>
       </slot>
     </div>
@@ -203,6 +208,7 @@ export interface ChangePlanFormProps {
   currentEmail?: string
   currentAffiliation?: string
   currentInstitutionalUrl?: string
+  submitLabel?: string
 }
 
 export type AvailablePlan = {
@@ -224,6 +230,7 @@ const props = withDefaults(defineProps<ChangePlanFormProps>(), {
   currentInstitutionalUrl: '',
   currentEmail: '',
   availablePlans: () => [],
+  submitLabel: 'Confirm Plan Change Request',
 })
 
 const emit = defineEmits<{
