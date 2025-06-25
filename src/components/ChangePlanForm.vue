@@ -266,14 +266,14 @@ const showAdditionalFields = computed(() => {
 })
 
 const formRules = computed<{
-  email?: string
-  affiliation?: string
-  institutionalUrl?: string
+  email?: any
+  affiliation?: any
+  institutionalUrl?: any
 }>(
   (): {
-    email?: string
-    affiliation?: string
-    institutionalUrl?: string
+    email?: any
+    affiliation?: any
+    institutionalUrl?: any
   } => {
     let affiliationRules: {
       email?: any
