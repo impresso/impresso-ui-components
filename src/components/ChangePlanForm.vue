@@ -65,7 +65,7 @@
           id="input-group-1"
           label="Institution Email *"
           label-for="email"
-          :description="(v$.email?.$errors[0]?.$message as string)"
+          :description="(v$.email?.$errors[0]?.$message as string ?? '')"
         >
           <BFormInput
             id="email"
@@ -265,55 +265,53 @@ const showAdditionalFields = computed(() => {
   return +requireAffiliation.value + +requireInstitutionalUrl.value
 })
 
-const formRules = computed(
-  (): {
-    email?: string
-    affiliation?: string
-    institutionalUrl?: string
-  } => {
-    let affiliationRules: {
-      email?: any
-      affiliation?: any
-      institutionalUrl?: any
-    } = {}
-    if (!props.enableAdditionalFields) {
-      return affiliationRules
-    }
-    if (requireAffiliation.value || requireInstitutionalUrl.value) {
-      affiliationRules.email = {
-        required,
-        minLength: minLength(4),
-        email,
-        $autoDirty: true,
-      }
-    }
-    if (requireAffiliation.value) {
-      affiliationRules.affiliation = {
-        $autoDirty: true,
-        required,
-        minLength: minLength(2),
-      }
-    }
-    if (requireInstitutionalUrl.value) {
-      affiliationRules.institutionalUrl = {
-        $autoDirty: true,
-        required,
-        urlRegex: helpers.withMessage(
-          'Please enter a valid URL',
-          (value: string) => {
-            if (!value || value.length === 0) {
-              return true
-            }
-            const urlPattern =
-              /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/
-            return urlPattern.test(value)
-          }
-        ),
-      }
-    }
+const formRules = computed<{
+  email?: string
+  affiliation?: string
+  institutionalUrl?: string
+}>(() => {
+  let affiliationRules: {
+    email?: any
+    affiliation?: any
+    institutionalUrl?: any
+  } = {}
+  if (!props.enableAdditionalFields) {
     return affiliationRules
   }
-)
+  if (requireAffiliation.value || requireInstitutionalUrl.value) {
+    affiliationRules.email = {
+      required,
+      minLength: minLength(4),
+      email,
+      $autoDirty: true,
+    }
+  }
+  if (requireAffiliation.value) {
+    affiliationRules.affiliation = {
+      $autoDirty: true,
+      required,
+      minLength: minLength(2),
+    }
+  }
+  if (requireInstitutionalUrl.value) {
+    affiliationRules.institutionalUrl = {
+      $autoDirty: true,
+      required,
+      urlRegex: helpers.withMessage(
+        'Please enter a valid URL',
+        (value: string) => {
+          if (!value || value.length === 0) {
+            return true
+          }
+          const urlPattern =
+            /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/
+          return urlPattern.test(value)
+        }
+      ),
+    }
+  }
+  return affiliationRules
+})
 
 function getPayloadForPlan(planName: string): ChangePlanFormPayload {
   const payload: ChangePlanFormPayload = {
