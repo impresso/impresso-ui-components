@@ -60,6 +60,7 @@ export const Default: Story = {
     availablePlans: AvailablePlans,
     onChange: action('change'),
     onSubmit: action('submit'),
+    enableAdditionalFields: true,
   } as ChangePlanFormProps,
 }
 
@@ -70,6 +71,7 @@ export const WithCurrentPlan: Story = {
     onChange: action('change'),
     onSubmit: action('submit'),
     currentPlan: 'plan-researcher',
+    enableAdditionalFields: true,
   } as ChangePlanFormProps,
 }
 
@@ -80,6 +82,7 @@ export const WithPendingPlan: Story = {
     onChange: action('change'),
     onSubmit: action('submit'),
     pendingPlan: 'plan-researcher',
+    enableAdditionalFields: true,
   } as ChangePlanFormProps,
 }
 
@@ -91,6 +94,7 @@ export const WithRejectedPlan: Story = {
     onSubmit: action('submit'),
     currentPlan: 'plan-basic',
     rejectedPlan: 'plan-researcher',
+    enableAdditionalFields: true,
   } as ChangePlanFormProps,
 }
 

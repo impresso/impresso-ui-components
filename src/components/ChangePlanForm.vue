@@ -181,9 +181,9 @@
 <script setup lang="ts">
 import Icon from './Icon.vue'
 import Alert from './Alert.vue'
-import { computed, nextTick, reactive, ref, watch } from 'vue'
+import { computed, nextTick, reactive, ref, watch, type Ref } from 'vue'
 import OverlayTrigger from './OverlayTrigger.vue'
-import useVuelidate from '@vuelidate/core'
+import useVuelidate, { type Validation } from '@vuelidate/core'
 import { email, helpers, minLength, required } from '@vuelidate/validators'
 import BFormGroup from './legacy/BFormGroup.vue'
 import BFormInput from './legacy/BFormInput.vue'
@@ -269,49 +269,55 @@ const formRules = computed<{
   email?: string
   affiliation?: string
   institutionalUrl?: string
-}>(() => {
-  let affiliationRules: {
-    email?: any
-    affiliation?: any
-    institutionalUrl?: any
-  } = {}
-  if (!props.enableAdditionalFields) {
+}>(
+  (): {
+    email?: string
+    affiliation?: string
+    institutionalUrl?: string
+  } => {
+    let affiliationRules: {
+      email?: any
+      affiliation?: any
+      institutionalUrl?: any
+    } = {}
+    if (!props.enableAdditionalFields) {
+      return affiliationRules
+    }
+    if (requireAffiliation.value || requireInstitutionalUrl.value) {
+      affiliationRules.email = {
+        required,
+        minLength: minLength(4),
+        email,
+        $autoDirty: true,
+      }
+    }
+    if (requireAffiliation.value) {
+      affiliationRules.affiliation = {
+        $autoDirty: true,
+        required,
+        minLength: minLength(2),
+      }
+    }
+    if (requireInstitutionalUrl.value) {
+      affiliationRules.institutionalUrl = {
+        $autoDirty: true,
+        required,
+        urlRegex: helpers.withMessage(
+          'Please enter a valid URL',
+          (value: string) => {
+            if (!value || value.length === 0) {
+              return true
+            }
+            const urlPattern =
+              /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/
+            return urlPattern.test(value)
+          }
+        ),
+      }
+    }
     return affiliationRules
   }
-  if (requireAffiliation.value || requireInstitutionalUrl.value) {
-    affiliationRules.email = {
-      required,
-      minLength: minLength(4),
-      email,
-      $autoDirty: true,
-    }
-  }
-  if (requireAffiliation.value) {
-    affiliationRules.affiliation = {
-      $autoDirty: true,
-      required,
-      minLength: minLength(2),
-    }
-  }
-  if (requireInstitutionalUrl.value) {
-    affiliationRules.institutionalUrl = {
-      $autoDirty: true,
-      required,
-      urlRegex: helpers.withMessage(
-        'Please enter a valid URL',
-        (value: string) => {
-          if (!value || value.length === 0) {
-            return true
-          }
-          const urlPattern =
-            /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/
-          return urlPattern.test(value)
-        }
-      ),
-    }
-  }
-  return affiliationRules
-})
+)
 
 function getPayloadForPlan(planName: string): ChangePlanFormPayload {
   const payload: ChangePlanFormPayload = {
@@ -332,7 +338,8 @@ function getPayloadForPlan(planName: string): ChangePlanFormPayload {
   return payload
 }
 // Initialize validation
-const v$ = useVuelidate(formRules, formData)
+const v$: Ref<Validation<typeof formRules.value, typeof formData>> =
+  useVuelidate(formRules, formData)
 /**
  * Watches for changes in the plan prop and updates selectedPlan
  */
