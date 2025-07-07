@@ -80,6 +80,7 @@ import { helpers, minLength, required } from '@vuelidate/validators'
 import BFormGroup from './legacy/BFormGroup.vue'
 import BFormInput from './legacy/BFormInput.vue'
 import Alert from './Alert.vue'
+import Icon from './Icon.vue'
 
 /**
  * Type definitions for the form payload
