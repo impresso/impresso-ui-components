@@ -11,6 +11,7 @@
         name="name"
         type="name"
         required
+        ref="nameInput"
         :class="{
           'border-danger': v$.name?.$error,
           'border-success': !v$.name?.$error && v$.name?.$dirty,
@@ -73,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, ref, watch, onMounted } from 'vue'
 import { type Ref } from 'vue'
 import useVuelidate, { type Validation } from '@vuelidate/core'
 import { helpers, minLength, required } from '@vuelidate/validators'
@@ -81,6 +82,7 @@ import BFormGroup from './legacy/BFormGroup.vue'
 import BFormInput from './legacy/BFormInput.vue'
 import Alert from './Alert.vue'
 import Icon from './Icon.vue'
+import { useTimeout } from '../utils/timers'
 
 /**
  * Type definitions for the form payload
@@ -98,18 +100,23 @@ export interface CreateCollectionFormProps {
   initialPayload?: CreateCollectionFormPayload
   submitLabel?: string
   isLoading?: boolean
+  autofocus?: boolean
 }
 /**
  * Props definition for ChangePlanForm component
  */
 const props = withDefaults(defineProps<CreateCollectionFormProps>(), {
   isLoading: false,
+  autofocus: false,
   initiaPayload: () => ({
     name: '',
     description: '',
   }),
   submitLabel: 'Create collection',
 })
+
+// Template ref for the name input
+const nameInput = ref<InstanceType<typeof BFormInput> | null>(null)
 
 const formData = reactive({
   name: props.initialPayload?.name || '',
@@ -133,6 +140,36 @@ const v$: Ref<Validation<typeof formRules, typeof formData>> = useVuelidate(
   formRules,
   formData
 )
+
+const { set: setDelayedFocus } = useTimeout()
+
+function focusNameInput() {
+  try {
+    const inputElement = nameInput.value?.$el || nameInput.value
+    if (inputElement && typeof inputElement.focus === 'function') {
+      inputElement.focus()
+    }
+  } catch (error) {
+    console.debug('[CreateCollectionForm] Could not focus name input:', error)
+  }
+}
+
+// Watch for autofocus prop changes
+watch(
+  () => props.autofocus,
+  (newVal) => {
+    if (newVal) {
+      setDelayedFocus(focusNameInput, 300)
+    }
+  }
+)
+
+// Also trigger on mount
+onMounted(() => {
+  if (props.autofocus) {
+    setDelayedFocus(focusNameInput, 300)
+  }
+})
 
 /**
  * Handles form submission

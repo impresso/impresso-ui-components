@@ -39,3 +39,14 @@ export const Default: Story = {
     isLoading: false,
   } as CreateCollectionFormProps,
 }
+export const WithAutofocus: Story = {
+  args: {
+    initialPayload: {
+      name: 'name',
+      description: 'a description',
+    },
+    autofocus: true,
+    submitLabel: 'Create Collection',
+    isLoading: false,
+  } as CreateCollectionFormProps,
+}
