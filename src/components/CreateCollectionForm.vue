@@ -27,7 +27,7 @@
       label-for="description"
       :description="(v$.description?.$errors[0]?.$message as string ?? '')"
     >
-      <BFormInput
+      <BFormTextarea
         id="description"
         name="description"
         :class="{
@@ -36,7 +36,8 @@
         }"
         class="rounded-sm shadow-sm"
         v-model.trim="formData.description"
-      ></BFormInput>
+        rows="3"
+      ></BFormTextarea>
     </BFormGroup>
 
     <div class="mt-3">
@@ -83,6 +84,7 @@ import BFormInput from './legacy/BFormInput.vue'
 import Alert from './Alert.vue'
 import Icon from './Icon.vue'
 import { useTimeout } from '../utils/timers'
+import BFormTextarea from './legacy/BFormTextarea.vue'
 
 /**
  * Type definitions for the form payload
