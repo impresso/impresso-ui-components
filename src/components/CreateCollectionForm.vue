@@ -193,10 +193,10 @@ const submitForm = async (event: Event) => {
 
   const isFormValid = await v$.value.$validate()
 
-  console.debug('[CreateCollecitonForm] @submitForm:', isFormValid)
+  console.debug('[CreateCollectionForm] @submitForm:', isFormValid)
   if (!isFormValid) {
     console.warn(
-      '[CreateCollecitonForm] Form validation failed:',
+      '[CreateCollectionForm] Form validation failed:',
       v$.value.$errors
     )
     return
