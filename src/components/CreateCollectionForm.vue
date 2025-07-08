@@ -110,7 +110,7 @@ export interface CreateCollectionFormProps {
 const props = withDefaults(defineProps<CreateCollectionFormProps>(), {
   isLoading: false,
   autofocus: false,
-  initiaPayload: () => ({
+  initialPayload: () => ({
     name: '',
     description: '',
   }),
@@ -124,6 +124,17 @@ const formData = reactive({
   name: props.initialPayload?.name || '',
   description: props.initialPayload?.description || '',
 })
+
+watch(
+  () => props.initialPayload,
+  (newVal) => {
+    if (newVal) {
+      formData.name = newVal.name || ''
+      formData.description = newVal.description || ''
+    }
+  },
+  { immediate: true, deep: true, flush: 'post' }
+)
 
 const formRules = {
   name: {
