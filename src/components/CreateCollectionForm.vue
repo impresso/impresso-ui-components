@@ -61,7 +61,7 @@
       </slot>
       <slot name="submit-button" :submit="submitForm" :disabled="isLoading">
         <button
-          type="button"
+          type="submit"
           @click="submitForm"
           :disabled="isLoading"
           class="btn btn-outline-secondary btn-md px-4 border border-dark btn-block"
