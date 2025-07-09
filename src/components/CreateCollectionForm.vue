@@ -120,7 +120,10 @@ const props = withDefaults(defineProps<CreateCollectionFormProps>(), {
 // Template ref for the name input
 const nameInput = ref<InstanceType<typeof BFormInput> | null>(null)
 
-const formData = reactive({
+const formData = reactive<{
+  name: string
+  description: string
+}>({
   name: props.initialPayload?.name || '',
   description: props.initialPayload?.description || '',
 })
@@ -136,7 +139,10 @@ watch(
   { immediate: true, deep: true, flush: 'post' }
 )
 
-const formRules = {
+const formRules: {
+  name: any
+  description: any
+} = {
   name: {
     required: helpers.withMessage('Collection name is required', required),
     minLength: helpers.withMessage(
