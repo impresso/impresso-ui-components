@@ -33,7 +33,7 @@
               </button>
             </slot>
           </div>
-
+          <slot name="modal-header-extra" />
           <div :class="`modal-body ${props.bodyClass}`">
             <slot></slot>
           </div>
