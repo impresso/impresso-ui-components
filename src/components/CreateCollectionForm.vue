@@ -1,43 +1,19 @@
 <template>
   <form class="createCollectionForm" @submit="submitForm">
-    <BFormGroup
-      id="input-group-1"
-      :label="$t('name')"
-      label-for="name"
-      :description="(v$.name?.$errors[0]?.$message as string ?? '')"
-    >
-      <BFormInput
-        id="name"
-        name="name"
-        type="name"
-        required
-        ref="nameInput"
-        :class="{
-          'border-danger': v$.name?.$error,
-          'border-success': !v$.name?.$error && v$.name?.$dirty,
-        }"
-        class="rounded-sm shadow-sm"
-        v-model.trim="formData.name"
-      ></BFormInput>
+    <BFormGroup id="input-group-1" :label="$t('name')" label-for="name"
+      :description="(v$.name?.$errors[0]?.$message as string ?? '')">
+      <BFormInput id="name" name="name" type="name" required ref="nameInput" :class="{
+        'border-danger': v$.name?.$error,
+        'border-success': !v$.name?.$error && v$.name?.$dirty,
+      }" class="rounded-sm shadow-sm" v-model.trim="formData.name"></BFormInput>
     </BFormGroup>
     <p class="text-muted very-small pt-0 px-3" v-html="$t('nameUnique')"></p>
-    <BFormGroup
-      id="input-group-2"
-      :label="$t('description')"
-      label-for="description"
-      :description="(v$.description?.$errors[0]?.$message as string ?? '')"
-    >
-      <BFormTextarea
-        id="description"
-        name="description"
-        :class="{
-          'border-danger': v$.description?.$error,
-          'border-success': !v$.description?.$error && v$.description?.$dirty,
-        }"
-        class="rounded-sm shadow-sm"
-        v-model.trim="formData.description"
-        rows="3"
-      ></BFormTextarea>
+    <BFormGroup id="input-group-2" :label="$t('description')" label-for="description"
+      :description="(v$.description?.$errors[0]?.$message as string ?? '')">
+      <BFormTextarea id="description" name="description" :class="{
+        'border-danger': v$.description?.$error,
+        'border-success': !v$.description?.$error && v$.description?.$dirty,
+      }" class="rounded-sm shadow-sm" v-model.trim="formData.description" rows="3"></BFormTextarea>
     </BFormGroup>
 
     <div class="mt-3">
@@ -51,8 +27,7 @@
             <p>{{ $t('formErrors') }}</p>
             <ul class="m-0">
               <li v-for="error in v$.$errors" :key="error.$uid">
-                <b>{{ error.$property }}</b
-                >:
+                <b>{{ error.$property }}</b>:
                 {{ error.$message }}
               </li>
             </ul>
@@ -60,12 +35,8 @@
         </Alert>
       </slot>
       <slot name="submit-button" :submit="submitForm" :disabled="isLoading">
-        <button
-          type="submit"
-          @click="submitForm"
-          :disabled="isLoading"
-          class="btn btn-outline-secondary btn-md px-4 border border-dark btn-block"
-        >
+        <button type="submit" @click="submitForm" :disabled="isLoading"
+          class="btn btn-outline-secondary btn-md px-4 border border-dark btn-block">
           <Icon name="sendMail" />
           <span class="ml-2" v-html="submitLabel"></span>
         </button>
@@ -214,8 +185,7 @@ const submitForm = async (event: Event) => {
 }
 </script>
 
-<i18n>
-{
+<i18n lang="json">{
   "en": {
     "name": "Name *",
     "description": "Description",
@@ -225,5 +195,4 @@ const submitForm = async (event: Event) => {
     "noteCollectionLimited": "Please note: Collections are currently limited to 10.000 items.",
     "note": "If your search returned more results, only the 10.000 most relevant items will be stored."
   }
-}
-</i18n>
+}</i18n>

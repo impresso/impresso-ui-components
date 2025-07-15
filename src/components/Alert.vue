@@ -9,7 +9,7 @@
 import { computed } from 'vue'
 import Icon from './Icon.vue'
 
-interface AlertProps {
+export interface AlertProps {
   value?: string
   type?: 'info' | 'warning' | 'error' | 'success'
 }

@@ -6,8 +6,7 @@
       <span class="small-caps" v-if="showType">{{ $t(item.type) }}</span>
     </router-link> -->
     <div>
-      <span :class="titleClass">{{ title }}</span
-      >{{ ' ' }}
+      <span :class="titleClass">{{ title }}</span>{{ ' ' }}
       <span class="small-caps" v-if="showType">{{ $t(item.type) }}</span>
     </div>
   </div>
@@ -49,12 +48,10 @@ const title = computed(() => {
   return props.item.name || props.item.uid
 })
 </script>
-<i18n lang="json">
-{
+<i18n lang="json">{
   "en": {
     "newspaper_label": "Newspaper",
     "radio_label": "Radio",
     "radio_broadcast": "Radio broadcast"
   }
-}
-</i18n>
+}</i18n>
