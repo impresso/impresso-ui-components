@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import ChangePasswordForm from './ChangePasswordForm.vue'
-import type { ChangePasswordFormProps } from './ChangePasswordForm.vue'
+import LogoImpressoDatalab from './LogoImpressoDatalab.vue'
+import type { LogoImpressoDatalabProps } from './LogoImpressoDatalab.vue'
 
 const meta = {
-  title: 'forms/ChangePasswordForm',
-  component: ChangePasswordForm,
+  title: 'logos/LogoImpressoDatalab',
+  component: LogoImpressoDatalab,
   parameters: {
     layout: 'centered',
     docs: {
@@ -15,22 +15,22 @@ const meta = {
   },
   tags: ['autodocs'],
   render: (args) => ({
-    components: { ChangePasswordForm },
+    components: { LogoImpressoDatalab },
     setup() {
       return { args }
     },
     template: `
       <div style="width: 500px; height: 600px;">
-        <ChangePasswordForm v-bind="args" />
+        <LogoImpressoDatalab v-bind="args" />
       </div>
     `,
   }),
-} satisfies Meta<typeof ChangePasswordForm>
+} satisfies Meta<typeof LogoImpressoDatalab>
 
 export default meta
 type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {
-    isLoading: false,
-  } as ChangePasswordFormProps,
+    width: 200,
+  } as LogoImpressoDatalabProps,
 }

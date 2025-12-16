@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/vue3'
+import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import BFormTextarea from './BFormTextarea.vue'
 import type { BFormTextareaProps } from './BFormTextarea.vue'
 

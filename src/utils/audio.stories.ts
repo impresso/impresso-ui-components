@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/vue3'
+import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
 import { formatTime, processPartialAudioContentItem } from './audio'
 import type { PartialAudioContentItem } from './audio'

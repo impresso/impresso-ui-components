@@ -7,6 +7,22 @@ export interface MediaSource {
   endYear?: number
 }
 
+export interface SpecialMembershipDataset {
+  id: string
+  title: string
+  bitmapPosition?: number
+  metadata: Record<string, any>
+}
+
+export interface SpecialMembershipRequest {
+  id: string
+  dataset: SpecialMembershipDataset
+  createdAt: Date
+  updatedAt: Date
+  status: 'pending' | 'approved' | 'rejected'
+}
+
+
 export interface ContentItem {
   uid: string
   type: 'audio' | 'ar'

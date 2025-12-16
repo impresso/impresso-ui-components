@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/vue3'
+import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import OverlayTrigger from './OverlayTrigger.vue'
 import type { OverlayTriggerProps } from './OverlayTrigger.vue'
 

@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/vue3'
-import { action } from '@storybook/addon-actions'
+import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { action } from 'storybook/actions'
 import AcceptTermsOfUse from './AcceptTermsOfUse.vue'
 import type { AcceptTermsOfUseProps } from './AcceptTermsOfUse.vue'
 

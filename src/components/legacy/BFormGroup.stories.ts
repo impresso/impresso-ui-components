@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/vue3'
+import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import BFormGroup from './BFormGroup.vue'
 import BFormInput from './BFormInput.vue'
 import type { BFormGroupProps } from './BFormGroup.vue'

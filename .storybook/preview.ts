@@ -1,5 +1,5 @@
-import type { Preview } from '@storybook/vue3'
-import { setup } from '@storybook/vue3'
+import type { Preview } from '@storybook/vue3-vite'
+import { setup } from '@storybook/vue3-vite'
 import { createI18n } from 'vue-i18n'
 import { h } from 'vue'
 import '../src/assets/legacy/bootstrap-impresso-theme.css'

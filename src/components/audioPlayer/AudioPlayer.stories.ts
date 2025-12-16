@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import AudioPlayer from "./AudioPlayer.vue";
 
 const meta: Meta<typeof AudioPlayer> = {
