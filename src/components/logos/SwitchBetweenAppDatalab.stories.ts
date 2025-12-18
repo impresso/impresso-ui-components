@@ -14,7 +14,7 @@ const meta = {
     },
   },
   tags: ['autodocs'],
-  render: (args) => ({
+  render: (args: SwitchBetweenAppDatalabProps) => ({
     components: { SwitchBetweenAppDatalab },
     setup() {
       return { args }
@@ -44,4 +44,26 @@ export const AppVersion: Story = {
     color: 'blue',
     isApp: true,
   } as SwitchBetweenAppDatalabProps,
+}
+
+export const AppVersionUsingSlot: Story = {
+  args: {
+    width: 90,
+    color: 'blue',
+    isApp: true,
+  } as SwitchBetweenAppDatalabProps,
+  render: (args: SwitchBetweenAppDatalabProps) => ({
+    components: { SwitchBetweenAppDatalab },
+    setup() {
+      return { args }
+    },
+    template: `
+      <div 
+    class="very-small-caps-bold" style="width: 500px; height: 600px; position:relative; overflow:hidden">
+        <SwitchBetweenAppDatalab v-bind="args" class="text-decoration-none">
+          Custom label to switch to Impresso DataLab
+        </SwitchBetweenAppDatalab>
+      </div>
+    `,
+  }),
 }

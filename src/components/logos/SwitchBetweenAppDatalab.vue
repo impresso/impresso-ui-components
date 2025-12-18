@@ -6,7 +6,9 @@
       :width="props.width"
       class="SwitchBetweenAppDatalab_logo"
     />
-    <span v-html="$t(translationKey)"></span>
+    <slot>
+      <span v-html="label" />
+    </slot>
   </a>
 </template>
 
@@ -55,24 +57,16 @@ const computedStyle = computed(() => ({
   color: props.color,
 }))
 
-const translationKey = computed(() => {
+const label = computed(() => {
   if (props.isDatalab) {
-    return 'switch_to_app'
+    return 'Switch to Impresso App'
   } else if (props.isApp) {
-    return 'switch_to_datalab'
+    return 'Switch to Impresso DataLab'
   } else {
     return ''
   }
 })
 </script>
-<i18n lang="json">
-{
-  "en": {
-    "switch_to_app": "Switch to Impresso App",
-    "switch_to_datalab": "Switch to Impresso Data Lab"
-  }
-}
-</i18n>
 <style lang="css">
 .SwitchBetweenAppDatalab {
   color: var(--impresso-color-black);
