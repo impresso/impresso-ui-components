@@ -21,6 +21,10 @@
 :root {
   --impresso-color-paper: #fafbf2;
   --impresso-color-white: #ffffff;
+  --impresso-color-white-alpha-20: rgba(255, 255, 255, 0.2);
+  --impresso-color-white-alpha-30: rgba(255, 255, 255, 0.3);
+  --impresso-color-white-alpha-50: rgba(255, 255, 255, 0.5);
+  --impresso-color-white-alpha-80: rgba(255, 255, 255, 0.8);
   --impresso-color-yellow-code: 255, 235, 120;
   --impresso-color-yellow: #ffeb78;
   --impresso-color-yellow-alpha-20: rgba(255, 235, 120, 0.2);
@@ -31,10 +35,16 @@
   --impresso-color-black: #343a40;
   --impresso-color-black-alpha-20: rgba(52, 58, 64, 0.2);
   --impresso-color-black-alpha-30: rgba(52, 58, 64, 0.3);
+  --impresso-color-black-alpha-50: rgba(52, 58, 64, 0.5);
   --impresso-color-black-rgb: 52, 58, 64;
-  --impresso-color-deep-purple: #17191c;
+
+  --impresso-color-black-deeper: #17191c;
+
   --impresso-color-pastel-blue: rgba(86, 204, 242);
   --impresso-color-pastel-blue-alpha-20: rgba(86, 204, 242, 0.2);
+  --impresso-color-pastel-blue-alpha-30: rgba(86, 204, 242, 0.3);
+  --impresso-color-pastel-blue-alpha-50: rgba(86, 204, 242, 0.5);
+  --impresso-color-pastel-blue-alpha-80: rgba(86, 204, 242, 0.8);
 
   --impresso-border-radius-xs: 5px;
   --impresso-border-radius-sm: 10px;
@@ -44,13 +54,19 @@
   --impresso-font-size-smallcaps: 0.72em;
   --impresso-letter-spacing-smallcaps: 0.08em;
   --impresso-letter-spacing-smallcaps-md: 0.12em;
+  --impresso-font-size-verysmallcaps: 0.65em;
+  --impresso-letter-spacing-verysmallcaps: 0.09em;
+
   --impresso-font-size-smaller: 0.85em;
-  --impresso-font-size-bigger: 1.2em;
   --impresso-wght: 450;
   --impresso-wght-medium: 600;
   --impresso-wght-bold: 700;
   --impresso-wght-smallcaps: 580;
   --impresso-wght-smallcaps-bold: 800;
+  --impresso-wght-verysmallcaps: 550;
+
+  --impresso-color-light-grey: #f8f9fa;
+  --impresso-color-light-grey-alpha-50: rgba(248, 249, 250, 0.5);
 
   --info: #c3fcf1;
   --info-rgb: 195, 252, 241;
@@ -67,8 +83,9 @@
   --success: #a6d47c;
   --success-rgb: 166, 212, 124;
 
-  --clr-white: #f8f8ff;
+  --clr-white: #ffffff;
   --clr-white-rgba-20: #ffffff33;
+  --clr-white-rgba-90: #ffffffee;
   --clr-white-rgba-50: #f8f8ff80;
   --clr-dark: var(--impresso-color-black);
 
@@ -81,6 +98,7 @@
   --clr-grey-700: #e1e1ee;
   --clr-grey-800: #ececfb;
   --clr-grey-900: #f8f8ff;
+  --clr-grey-100-rgba-10: #464d5320;
   --clr-grey-100-rgba-20: #464d5333;
   --clr-grey-200-rgba-20: #585d6633;
   --clr-grey-300-rgba-20: #7c7f8c33;
@@ -124,6 +142,8 @@
     rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
   --bs-box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
   --bs-box-shadow-lg-darker: 0 1rem 3rem rgba(0, 0, 0, 0.29);
+  --bs-box-shadow-md-darker: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
+    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em;
   --bs-box-shadow-focus: 0 0 0 0.2rem #ffeb78;
   --bs-box-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.075);
 
@@ -132,9 +152,14 @@
   --impresso-font-size-4: 1.5rem;
 
   --impresso-transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
-
+  --impresso-transition-duration: 0.2s;
   --z-index-pagination: 1001;
-  --z-index-modals: 1041;
+  --z-index-modals: 1039;
+  --z-index-modals-feedback: 1039;
+
+  --impresso-text-decoration-color: var(--impresso-color-black-alpha-30);
+  --impresso-text-decoration-color-hover: var(--impresso-color-black-alpha-50);
+  --impresso-text-underline-offset: 3px;
 }
 
 body {
@@ -213,6 +238,42 @@ h6.dropdown-header {
   font-weight: 450;
   font-variation-settings: 'wght' 450;
 }
+
+a,
+.btn-link {
+  text-decoration: underline;
+  text-decoration-color: var(--impresso-text-decoration-color);
+  color: var(--impresso-color-black-deeper);
+  text-underline-offset: var(--impresso-text-underline-offset);
+}
+a.btn {
+  text-decoration: none;
+}
+
+a:hover,
+.btn-link:hover {
+  text-decoration-color: inherit;
+}
+
+.badge {
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--bs-box-shadow-sm);
+}
+
+.badge-info {
+  --impresso-text-decoration-color: currentColor;
+  --bs-box-shadow-sm: none;
+  background-color: var(--impresso-color-pastel-blue-alpha-50);
+}
+.badge-language {
+  background-color: #e1e6ea;
+}
+.badge-light {
+  background-color: var(--clr-grey-600);
+  color: inherit;
+  box-shadow: none !important;
+}
+
 .btn-group-sm > .btn,
 .input-group-sm > .input-group-append > .btn {
   font-size: var(--impresso-font-size-smallcaps);
@@ -229,12 +290,27 @@ h6.dropdown-header {
   text-transform: uppercase;
 }
 
+.btn-link {
+  text-decoration: underline;
+  text-decoration-color: var(--impresso-text-decoration-color);
+  transition: text-decoration-color 0.2s var(--impresso-transition-ease);
+  padding: inherit;
+  font-size: inherit;
+  text-align: inherit;
+  line-height: inherit;
+  vertical-align: inherit;
+}
+
 .alert {
   border-radius: var(--border-radius-md);
   box-shadow: var(--bs-box-shadow-sm);
 }
 .alert p {
   margin: 0;
+}
+
+.border-info {
+  border-color: rgb(var(--info-darker-rgb)) !important;
 }
 b {
   font-weight: var(--impresso-wght-bold);
@@ -269,6 +345,30 @@ label {
   font-variation-settings: 'wght' var(--impresso-wght-smallcaps-bold);
 }
 
+.very-small-caps {
+  text-transform: uppercase;
+  font-size: var(--impresso-font-size-verysmallcaps);
+  font-variant: normal;
+  letter-spacing: var(--impresso-letter-spacing-verysmallcaps);
+  font-weight: var(--impresso-wght-verysmallcaps);
+  font-variation-settings: 'wght' var(--impresso-wght-verysmallcaps);
+}
+.very-small-caps-bold {
+  text-transform: uppercase;
+  font-size: var(--impresso-font-size-verysmallcaps);
+  font-variant: normal;
+  letter-spacing: var(--impresso-letter-spacing-verysmallcaps);
+  font-weight: var(--impresso-wght-smallcaps-bold);
+  font-variation-settings: 'wght' var(--impresso-wght-smallcaps-bold);
+}
+.no-small-caps {
+  text-transform: none;
+  font-variant: normal;
+  letter-spacing: normal;
+  font-size: var(--bs-font-size-base);
+  font-weight: inherit;
+  font-variation-settings: 'wght' var(--impresso-wght);
+}
 .small {
   font-size: 0.875em;
   font-weight: inherit;
@@ -301,9 +401,10 @@ label {
 .font-size-inherit {
   font-size: inherit;
 }
-
 .font-size-bigger {
-  font-size: var(--impresso-font-size-bigger);
+  font-size: 1.2em;
+  font-weight: var(--impresso-wght);
+  font-variation-settings: 'wght' var(--impresso-wght);
 }
 
 .btn-sm,
@@ -438,6 +539,7 @@ ul.nav.nav-pills .nav-item .nav-link {
   font-weight: var(--impresso-wght-smallcaps);
   font-variation-settings: 'wght' var(--impresso-wght-smallcaps);
   border-bottom: 1px solid transparent;
+  text-decoration: none;
 }
 ul.nav.nav-pills .nav-item.active .nav-link,
 ul.nav.nav-pills .nav-item .nav-link.active {
@@ -499,6 +601,44 @@ ul.nav.nav-pills .nav-item:hover .nav-link {
 .dropdown .dropdown-item {
   padding: var(--spacing-1) var(--spacing-3);
 }
+.dropdown-toggle[aria-expanded='true'] {
+  border-bottom: 1px solid white !important;
+}
+
+.dropdown-toggle::after {
+  height: 1rem;
+  margin: 0;
+  padding-left: 3px;
+}
+.dropdown-menu {
+  min-width: 100px;
+  padding: 0;
+  margin-top: -1px;
+  width: fit-content;
+}
+.dropdown.show.contains-form .dropdown-menu {
+  z-index: 1003;
+  min-width: 120%;
+  border-top-left-radius: var(--impresso-border-radius-xs);
+  border-top-right-radius: var(--impresso-border-radius-xs);
+  margin-right: -3px;
+}
+.dropdown-menu .custom-switch {
+  padding-inline-start: 35px;
+}
+.dropdown-menu .custom-switch .custom-control-label::before {
+  position: absolute;
+}
+
+.bg-accent {
+  background-color: var(--impresso-color-yellow) !important;
+}
+
+.bg-dark ::selection {
+  background-color: var(--impresso-color-yellow);
+  color: black;
+}
+
 .bg-dark .dropdown .Icon path {
   stroke: var(--clr-white) !important;
 }
@@ -538,6 +678,16 @@ ul.nav.nav-pills .nav-item:hover .nav-link {
 .modal .modal-footer {
   padding: var(--spacing-1);
 }
+
+.modal-backdrop {
+  background-image: radial-gradient(
+    ellipse at center,
+    var(--impresso-color-yellow) 0%,
+    var(--impresso-color-yellow) 20%,
+    transparent 75%
+  );
+  background-color: transparent;
+}
 /* SVGs */
 svg text {
   font-family: var(--bs-font-sans-serif), sans-serif;
@@ -550,6 +700,9 @@ svg path.domain {
 }
 
 /* other utilities */
+.gap-1 {
+  gap: var(--spacing-1);
+}
 .gap-2 {
   gap: var(--spacing-2);
 }
@@ -621,4 +774,11 @@ svg path.domain {
   transform: translateX(-50%);
   max-width: 100%;
   z-index: var(--z-index-pagination);
+}
+
+.pe-none {
+  pointer-events: none;
+}
+.pe-auto {
+  pointer-events: auto;
 }

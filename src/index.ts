@@ -19,3 +19,4 @@ export { default as TranscriptViewer } from './components/audioPlayer/Transcript
 
 export { default as LogoImpressoDatalab } from './components/logos/LogoImpressoDatalab.vue'
 export { default as LogoImpressoApp } from './components/logos/LogoImpressoApp.vue'
+export { default as SwitchBetweenAppDatalab } from './components/logos/SwitchBetweenAppDatalab.vue'
