@@ -76,7 +76,7 @@ const label = computed(() => {
   position: absolute;
   top: 0;
   left: 50%;
-  transform: translate(-50%, -48px);
+  transform: translate(-50%, -50px);
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
   padding: 50px var(--spacing-3) 2px;
