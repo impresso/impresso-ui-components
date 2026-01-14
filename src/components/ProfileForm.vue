@@ -202,7 +202,7 @@
           class="btn btn-outline-secondary btn-md px-4 border border-dark btn-block"
           type="button"
           @click="submitForm"
-          :disabled="isLoading"
+          :disabled="isLoading || disabled"
           aria-label="Register"
         >
           <Icon name="key" :strokeWidth="1.5" />
@@ -252,6 +252,7 @@ export interface ProfileFormProps {
   mode?: 'create' | 'edit'
   commonEmailProviders?: string[]
   submitAreaClasses?: string
+  disabled?: boolean
 }
 
 const props = withDefaults(defineProps<ProfileFormProps>(), {
@@ -277,6 +278,7 @@ const props = withDefaults(defineProps<ProfileFormProps>(), {
     'gmx.com',
   ],
   submitAreaClasses: 'position-sticky bottom-0 bg-white border-top py-3',
+  disabled: false,
 })
 const initialColors = props.initialValues.pattern?.length
   ? props.initialValues.pattern.split(',')
