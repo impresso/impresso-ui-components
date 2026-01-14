@@ -138,3 +138,24 @@ export const WithoutShowingAdditionalFields: Story = {
     currentPlan: 'plan-none',
   } as ChangePlanFormProps,
 }
+
+export const ExcludeCommonEmailProviders: Story = {
+  args: {
+    inline: false,
+    isLoading: false,
+    availablePlans: [
+      ...AvailablePlans,
+      {
+        name: 'plan-pro',
+        description:
+          'Select to test rejection of common email providers (e.g., gmail.com, yahoo.com)',
+        label: 'Pro User',
+        excludeCommonEmailProviders: true,
+      } as AvailablePlan,
+    ],
+    onChange: action('change'),
+    onSubmit: action('submit'),
+    currentPlan: 'plan-pro',
+    enableAdditionalFields: true,
+  } as ChangePlanFormProps,
+}

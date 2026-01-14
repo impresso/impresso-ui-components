@@ -182,7 +182,7 @@
       <slot name="accept-terms-of-use-label"> </slot>
     </AcceptTermsOfUse>
     <!-- error ma,nagemend and form submission -->
-    <div class="position-sticky bottom-0 bg-white border-top py-3">
+    <div class="position-sticky" :class="submitAreaClasses">
       <slot name="form-errors">
         <Alert type="warning" class="mb-3" role="alert" v-if="v$.$error">
           <div>
@@ -223,7 +223,7 @@ import {
   email,
   helpers,
   minLength,
-  required,
+  required as requiredRule,
   sameAs,
 } from '@vuelidate/validators'
 import BFormGroup from './legacy/BFormGroup.vue'
@@ -247,8 +247,11 @@ export interface ProfileFormProps {
   hideAffiliationFields?: boolean
   doesPlanRequireAffiliation?: boolean
   doesPlanRequireInsitutionalUrl?: boolean
+  doesPlanExcludeCommonEmailProviders?: boolean
   isLoading?: boolean
   mode?: 'create' | 'edit'
+  commonEmailProviders?: string[]
+  submitAreaClasses?: string
 }
 
 const props = withDefaults(defineProps<ProfileFormProps>(), {
@@ -263,6 +266,17 @@ const props = withDefaults(defineProps<ProfileFormProps>(), {
     pattern: '',
   }),
   mode: 'create',
+  commonEmailProviders: () => [
+    'gmail.com',
+    'yahoo.com',
+    'hotmail.com',
+    'outlook.com',
+    'aol.com',
+    'icloud.com',
+    'mail.com',
+    'gmx.com',
+  ],
+  submitAreaClasses: 'bottom-0 bg-white border-top py-3',
 })
 const initialColors = props.initialValues.pattern?.length
   ? props.initialValues.pattern.split(',')
@@ -285,6 +299,10 @@ const formRules = computed(
     affiliation?: any
     institutionalUrl?: any
   } => {
+    const required = helpers.withMessage(
+      'This field is required.',
+      requiredRule
+    )
     let affiliationRules: { affiliation?: any; institutionalUrl?: any } = {}
     if (!props.hideAffiliationFields) {
       if (props.doesPlanRequireAffiliation) {
@@ -297,7 +315,7 @@ const formRules = computed(
       if (props.doesPlanRequireInsitutionalUrl) {
         affiliationRules.institutionalUrl = {
           $autoDirty: true,
-          required: false,
+          required,
           urlRegex: helpers.withMessage(
             'Please enter a valid URL',
             (value: string) => {
@@ -312,6 +330,28 @@ const formRules = computed(
         }
       }
     }
+    const emailRules = {
+      email: {
+        required,
+        minLength: minLength(4),
+        email: helpers.withMessage('Please enter a valid email address', email),
+        $autoDirty: true,
+        ...(props.doesPlanExcludeCommonEmailProviders
+          ? {
+              excludeCommonEmailProvider: helpers.withMessage(
+                'Please use your institutional email address.',
+                (value: string) => {
+                  if (!value || value.length === 0) {
+                    return true
+                  }
+                  const domain = value.split('@')[1]?.toLowerCase()
+                  return !props.commonEmailProviders.includes(domain)
+                }
+              ),
+            }
+          : {}),
+      },
+    } // required|email
 
     const passwordRules =
       props.mode === 'edit'
@@ -338,10 +378,9 @@ const formRules = computed(
     return {
       firstname: { required, minLength: minLength(2), $autoDirty: true }, // required|min:2
       lastname: { required, minLength: minLength(2), $autoDirty: true }, // required|min:2
-      email: { required, minLength: minLength(4), email, $autoDirty: true }, // required|email
-
       ...passwordRules,
       ...affiliationRules,
+      ...emailRules,
     }
   }
 )

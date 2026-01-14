@@ -87,3 +87,11 @@ export const WithPattern: Story = {
     onSubmit: action('@submit'),
   } as ProfileFormProps,
 }
+
+export const ExcludeCommonEmailProviders: Story = {
+  args: {
+    mode: 'create',
+    doesPlanExcludeCommonEmailProviders: true,
+    onSubmit: action('@submit'),
+  } as ProfileFormProps,
+}

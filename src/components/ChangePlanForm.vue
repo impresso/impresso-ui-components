@@ -57,7 +57,10 @@
     >
       <div
         :class="{
-          enabled: requireAffiliation || requireInstitutionalUrl,
+          enabled:
+            requireAffiliation ||
+            requireInstitutionalUrl ||
+            excludeCommonEmailProviders,
         }"
       >
         <p class="pt-3">Please review and update your information below:</p>
@@ -209,6 +212,7 @@ export interface ChangePlanFormProps {
   currentAffiliation?: string
   currentInstitutionalUrl?: string
   submitLabel?: string
+  commonEmailProviders?: string[]
 }
 
 export type AvailablePlan = {
@@ -217,6 +221,7 @@ export type AvailablePlan = {
   description: string
   requireAffiliation?: boolean
   requireInstitutionalUrl?: boolean
+  excludeCommonEmailProviders?: boolean
 }
 
 /**
@@ -231,6 +236,16 @@ const props = withDefaults(defineProps<ChangePlanFormProps>(), {
   currentEmail: '',
   availablePlans: () => [],
   submitLabel: 'Confirm Plan Change Request',
+  commonEmailProviders: () => [
+    'gmail.com',
+    'yahoo.com',
+    'hotmail.com',
+    'aol.com',
+    'outlook.com',
+    'icloud.com',
+    'mail.com',
+    'gmx.com',
+  ],
 })
 
 const emit = defineEmits<{
@@ -258,11 +273,19 @@ const requireInstitutionalUrl = computed(() => {
   return !!props.availablePlans.find((d) => d.name === selectedPlan.value)
     ?.requireInstitutionalUrl
 })
+const excludeCommonEmailProviders = computed(() => {
+  return !!props.availablePlans.find((d) => d.name === selectedPlan.value)
+    ?.excludeCommonEmailProviders
+})
 const showAdditionalFields = computed(() => {
   if (!props.enableAdditionalFields) {
     return 0
   }
-  return +requireAffiliation.value + +requireInstitutionalUrl.value
+  return (
+    +requireAffiliation.value +
+    +requireInstitutionalUrl.value +
+    +excludeCommonEmailProviders.value
+  )
 })
 
 const formRules = computed<{
@@ -280,15 +303,34 @@ const formRules = computed<{
       affiliation?: any
       institutionalUrl?: any
     } = {}
+
     if (!props.enableAdditionalFields) {
       return affiliationRules
     }
-    if (requireAffiliation.value || requireInstitutionalUrl.value) {
+    if (
+      requireAffiliation.value ||
+      requireInstitutionalUrl.value ||
+      excludeCommonEmailProviders.value
+    ) {
       affiliationRules.email = {
         required,
         minLength: minLength(4),
         email,
         $autoDirty: true,
+        ...(excludeCommonEmailProviders.value
+          ? {
+              notCommonEmailProvider: helpers.withMessage(
+                'Please use your institutional email address.',
+                (value: string) => {
+                  if (!value || value.length === 0) {
+                    return true
+                  }
+                  const domain = value.split('@')[1]?.toLowerCase()
+                  return !props.commonEmailProviders.includes(domain)
+                }
+              ),
+            }
+          : {}),
       }
     }
     if (requireAffiliation.value) {
