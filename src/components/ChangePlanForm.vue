@@ -52,7 +52,7 @@
     <!-- optionally toggle the affiliation field -->
     <div
       style="overflow: hidden"
-      class="toggleHeightFieldsContainer border-top py-0 px-2"
+      class="toggleHeightFieldsContainer py-0 px-2"
       ref="toggleHeightFieldsContainerRef"
     >
       <div
@@ -148,7 +148,7 @@
         </p>
       </div>
     </div>
-    <div class="position-sticky py-3 bottom-0 bg-white w-100">
+    <div :class="submitAreaClasses">
       <slot name="form-errors">
         <Alert type="warning" class="mb-3" role="alert" v-if="v$.$error">
           <div>
@@ -213,6 +213,7 @@ export interface ChangePlanFormProps {
   currentInstitutionalUrl?: string
   submitLabel?: string
   commonEmailProviders?: string[]
+  submitAreaClasses?: string
 }
 
 export type AvailablePlan = {
@@ -246,6 +247,7 @@ const props = withDefaults(defineProps<ChangePlanFormProps>(), {
     'mail.com',
     'gmx.com',
   ],
+  submitAreaClasses: 'position-sticky border-top bottom-0 bg-white py-3',
 })
 
 const emit = defineEmits<{
@@ -405,7 +407,7 @@ watch(showAdditionalFields, async (newValue: number) => {
       const bbox = el.getBoundingClientRect()
       return sum + bbox.height + 20
     }, 0)
-
+  container.classList.toggle('border-top', newValue > 0)
   container.style.height = newValue > 0 ? `${totalHeight}px` : '0px'
 })
 

@@ -182,7 +182,7 @@
       <slot name="accept-terms-of-use-label"> </slot>
     </AcceptTermsOfUse>
     <!-- error ma,nagemend and form submission -->
-    <div class="position-sticky" :class="submitAreaClasses">
+    <div :class="submitAreaClasses">
       <slot name="form-errors">
         <Alert type="warning" class="mb-3" role="alert" v-if="v$.$error">
           <div>
@@ -276,7 +276,7 @@ const props = withDefaults(defineProps<ProfileFormProps>(), {
     'mail.com',
     'gmx.com',
   ],
-  submitAreaClasses: 'bottom-0 bg-white border-top py-3',
+  submitAreaClasses: 'position-sticky bottom-0 bg-white border-top py-3',
 })
 const initialColors = props.initialValues.pattern?.length
   ? props.initialValues.pattern.split(',')
