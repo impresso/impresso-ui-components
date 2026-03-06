@@ -35,7 +35,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {
     item: {
-      uid: 'RDN-1950-01-12-a-i0001',
+      id: 'RDN-1950-01-12-a-i0001',
       title: 'Accords économiques internationaux',
       excerpt:
         'La ronde des nations, revue hebdomadaire de la coopération internationale, réalisée et présentée par Fabrice Lamart. Les accords économiques internati',
@@ -48,7 +48,6 @@ export const Default: Story = {
       dataProvider: 'INA',
       mediaSource: {
         id: 'RDN',
-        uid: 'RDN',
         name: 'La ronde des nations',
         type: 'radio_broadcast',
       },
@@ -63,7 +62,7 @@ export const WithAudio: Story = {
   args: {
     enablePlayer: true,
     item: {
-      uid: 'RDN-1950-01-12-a-i0001',
+      id: 'RDN-1950-01-12-a-i0001',
       title: 'Accords économiques internationaux',
       excerpt:
         'La ronde des nations, revue hebdomadaire de la coopération internationale, réalisée et présentée par Fabrice Lamart. Les accords économiques internati',
@@ -76,7 +75,6 @@ export const WithAudio: Story = {
       dataProvider: 'INA',
       mediaSource: {
         id: 'RDN',
-        uid: 'RDN',
         name: 'La ronde des nations',
         type: 'radio_broadcast',
       },

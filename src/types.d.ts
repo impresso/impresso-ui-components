@@ -1,5 +1,5 @@
 export interface MediaSource {
-  uid: string
+  id: string
   name: string
   type: 'newspaper' | 'radio' | 'radio_broadcast'
   acronym?: string
@@ -8,7 +8,7 @@ export interface MediaSource {
 }
 
 export interface ContentItem {
-  uid: string
+  id: string
   type: 'audio' | 'ar'
   publicationDate: string
   title?: string
