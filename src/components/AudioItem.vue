@@ -38,9 +38,9 @@
         {{ $t(`buckets.accessRight.${item.copyright}`) }} &mdash;
         {{ $t('providedBy') }}
         <!-- <ItemSelector
-          :uid="item.dataProvider"
+          :id="item.dataProvider"
           :label="$t(`buckets.dataProvider.${item.dataProvider}`)"
-          :item="{ uid: item.dataProvider }"
+          :item="{ id: item.dataProvider }"
           type="partner"
         /> -->
         <span class="text-decoration-underline">
