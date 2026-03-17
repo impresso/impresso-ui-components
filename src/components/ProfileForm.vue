@@ -4,7 +4,7 @@
       id="input-group-1"
       label="Email (please use institution email if available) *"
       label-for="email"
-      :description="(v$.email!.$errors[0]?.$message as string)"
+      :description="v$.email!.$errors[0]?.$message as string"
     >
       <BFormInput
         id="email"
@@ -26,11 +26,11 @@
       <b>required</b>.
     </p>
     <div class="row" v-if="!hideAffiliationFields">
-      <div class="col">
+      <div class="col-12">
         <BFormGroup
           label="Affiliation"
           label-for="affiliation"
-          :description="(v$.affiliation?.$errors[0]?.$message as string)"
+          :description="v$.affiliation?.$errors[0]?.$message as string"
         >
           <bFormInput
             id="affiliation"
@@ -49,9 +49,9 @@
       </div>
       <div class="col">
         <BFormGroup
-          label="Institutional URL"
+          label="Your public institutional webpage URL"
           label-for="institutional-url"
-          :description="(v$.institutionalUrl?.$errors[0]?.$message as string)"
+          :description="v$.institutionalUrl?.$errors[0]?.$message as string"
         >
           <bFormInput
             id="institutional-url"
@@ -66,9 +66,14 @@
                 !v$.institutionalUrl?.$error && v$.institutionalUrl?.$dirty,
             }"
             class="rounded-sm shadow-sm"
-            placeholder="https://"
+            placeholder="https://your-institution.edu/your-page"
           ></bFormInput>
         </BFormGroup>
+        <p class="text-muted very-small pt-0 px-3">
+          Note: for Academic User Plan, an URL that points to your public
+          institutional webpage that lists you as a member is
+          <b>required</b>.
+        </p>
       </div>
     </div>
     <div class="row">
@@ -76,7 +81,7 @@
         <BFormGroup
           label="First Name *"
           label-for="firstname"
-          :description="(v$.firstname?.$errors[0]?.$message as string)"
+          :description="v$.firstname?.$errors[0]?.$message as string"
         >
           <bFormInput
             id="firstname"
@@ -97,7 +102,7 @@
         <BFormGroup
           label="Last Name *"
           label-for="lastname"
-          :description="(v$.lastname?.$errors[0]?.$message as string)"
+          :description="v$.lastname?.$errors[0]?.$message as string"
         >
           <bFormInput
             id="lastname"
@@ -121,7 +126,7 @@
         <BFormGroup
           label="Password *"
           label-for="password"
-          :description="(v$.password?.$errors[0]?.$message as string)"
+          :description="v$.password?.$errors[0]?.$message as string"
         >
           <bFormInput
             id="password"
@@ -143,7 +148,7 @@
         <BFormGroup
           label="Repeat password *"
           label-for="repeatPassword"
-          :description="(v$.repeatPassword?.$errors[0]?.$message as string)"
+          :description="v$.repeatPassword?.$errors[0]?.$message as string"
         >
           <bFormInput
             id="repeatPassword"
@@ -175,9 +180,11 @@
       class="mb-3"
       v-if="mode === 'create'"
       :disabled="isLoading"
-      @change="(event: Event) => {
-        emit('changeAcceptTerms', (event.target as HTMLInputElement).checked)
-      }"
+      @change="
+        (event: Event) => {
+          emit('changeAcceptTerms', (event.target as HTMLInputElement).checked)
+        }
+      "
     >
       <slot name="accept-terms-of-use-label"> </slot>
     </AcceptTermsOfUse>
@@ -303,7 +310,7 @@ const formRules = computed(
   } => {
     const required = helpers.withMessage(
       'This field is required.',
-      requiredRule
+      requiredRule,
     )
     let affiliationRules: { affiliation?: any; institutionalUrl?: any } = {}
     if (!props.hideAffiliationFields) {
@@ -327,7 +334,7 @@ const formRules = computed(
               const urlPattern =
                 /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/
               return urlPattern.test(value)
-            }
+            },
           ),
         }
       }
@@ -348,7 +355,7 @@ const formRules = computed(
                   }
                   const domain = value.split('@')[1]?.toLowerCase()
                   return !props.commonEmailProviders.includes(domain)
-                }
+                },
               ),
             }
           : {}),
@@ -363,7 +370,7 @@ const formRules = computed(
               minLength: minLength(8),
               urlRegex: helpers.withMessage(
                 'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character',
-                (value: string) => PasswordRegex.exec(value) != null
+                (value: string) => PasswordRegex.exec(value) != null,
               ),
               required,
               $autoDirty: true,
@@ -372,7 +379,7 @@ const formRules = computed(
               required,
               sameAsPassword: helpers.withMessage(
                 'Passwords do not match.',
-                sameAs(computed(() => formData.password))
+                sameAs(computed(() => formData.password)),
               ),
               $autoDirty: true,
             }, // required|confirmed:repeatPassword
@@ -384,7 +391,7 @@ const formRules = computed(
       ...affiliationRules,
       ...emailRules,
     }
-  }
+  },
 )
 
 // Define emits with type safety
@@ -400,7 +407,7 @@ const submitForm = async () => {
   console.info(
     '[SignUpForm] Form validation result:',
     isFormValid,
-    colors.value.join(',')
+    colors.value.join(','),
   )
   if (isFormValid) {
     // Form is valid, emit event with password data
@@ -425,6 +432,6 @@ watch(
     // Reset validation state
     v$.value.$reset()
   },
-  { deep: true, immediate: true }
+  { deep: true, immediate: true },
 )
 </script>
