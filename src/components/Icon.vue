@@ -74,6 +74,16 @@ const Icons: Record<string, IconData> = {
       },
     ],
   },
+  download: {
+    paths: [
+      {
+        d: 'M6 20L18 20',
+      },
+      {
+        d: 'M12 4V16M12 16L15.5 12.5M12 16L8.5 12.5',
+      },
+    ],
+  },
   slack: {
     width: 1664,
     height: 1792,
